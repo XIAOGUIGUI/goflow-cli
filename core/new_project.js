@@ -1,12 +1,14 @@
 'use strict'
-const chalk = require('chalk');
+const chalk = require('chalk')
 const ora = require('ora')
-const prompt = require('inquirer').prompt;
+const prompt = require('inquirer').prompt
 const goflowProject = require('../project')
 
-const { version: c_version } = require('../package.json')
+const {
+  version: c_version
+} = require('../package.json')
 
-module.exports = async function() {
+module.exports = async function () {
   let projectTypes = {}
 
   let spinner = void 0
@@ -39,8 +41,7 @@ module.exports = async function() {
       value: item
     }
   })
-  let questions = [
-    {
+  let questions = [{
       type: 'input',
       name: 'name',
       message: '项目名称',
@@ -73,25 +74,39 @@ module.exports = async function() {
       type: 'list',
       name: 'isSourcePath',
       message: '是否作为源路径',
-      choices: [{ name: 'no', value: false }, { name: 'yes', value: true }],
+      choices: [{
+        name: 'no',
+        value: false
+      }, {
+        name: 'yes',
+        value: true
+      }],
       default: 0
     }
   ]
-  const { name, type, version, description, isSourcePath } = await prompt( questions );
-  const options = {
-    path: process.cwd( ),
+  const {
+    name,
     type,
-    name, version, isSourcePath,
+    version,
+    description,
+    isSourcePath
+  } = await prompt(questions);
+
+  const options = {
+    path: process.cwd(),
+    type,
+    name,
+    version,
+    isSourcePath,
     c_version: `cli@${ c_version }`,
     description,
-    typeSourcePath: projectTypes[ type ].path,
+    typeSourcePath: projectTypes[type].path,
     typeTpl: projectTypes[type].type,
     from: 'cli',
   }
+  const result = await goflowProject.new(options)
 
-  const result = await goflowProject.new(options);
+  result && result.newProjectSuccessMessage && console.log(result.newProjectSuccessMessage)
 
-  result && result.newProjectSuccessMessage && console.log(result.newProjectSuccessMessage);
-
-  typeof result !== 'string'  ? print.success( '新建成功' ) : print.error( result );
+  typeof result !== 'string' ? print.success('新建成功') : print.error(result)
 }
