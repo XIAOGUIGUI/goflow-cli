@@ -1,0 +1,37 @@
+{
+  "name": "goflow-cli",
+  "version": "1.0.0",
+  "description": "goflow cli",
+  "main": "index.js",
+  "bin": {
+    "gf": "./index.js",
+    "goflow": "./index.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "boxen": "^1.3.0",
+    "chalk": "^2.4.1",
+    "commander": "^2.16.0",
+    "compare-versions": "^3.3.0",
+    "inquirer": "^6.0.0",
+    "legoflow-project": "0.0.24",
+    "ora": "^3.0.0"
+  },
+  "devDependencies": {
+    "fs-extra": "^7.0.0"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XIAOGUIGUI/goflow-cli.git"
+  },
+  "keywords": [
+    "gulp"
+  ],
+  "author": "chenronggui@gomo.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/XIAOGUIGUI/goflow-cli/issues"
+  },
+  "homepage": "https://github.com/XIAOGUIGUI/goflow-cli#readme"
+}
