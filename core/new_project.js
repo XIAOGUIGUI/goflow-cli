@@ -3,6 +3,7 @@ const chalk = require('chalk')
 const ora = require('ora')
 const prompt = require('inquirer').prompt
 const goflowProject = require('../project')
+const getConfig = require('./local_config').get
 
 const {
   version: c_version
@@ -13,7 +14,7 @@ module.exports = async function () {
 
   let spinner = void 0
 
-  if (true) {
+  if (getConfig('loadNPMLegoFlowTemplate')) {
     spinner = ora('正在获取 GoFlow NPM 模板').start()
   }
   projectTypes = await goflowProject.getProjectType()
@@ -98,6 +99,7 @@ module.exports = async function () {
     name,
     version,
     isSourcePath,
+    author: getConfig( 'user' ),
     c_version: `cli@${ c_version }`,
     description,
     typeSourcePath: projectTypes[type].path,
