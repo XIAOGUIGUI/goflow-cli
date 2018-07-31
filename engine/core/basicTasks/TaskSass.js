@@ -1,25 +1,35 @@
 const path = require('path')
 const through = require('through2')
+const escape = require('lodash/escape')
+
 let sassCompileError = false
 let sassCompileSuccess = false
 let messager
 const sassErrorNotifier = function (msg) {
 
-  console.log( 'Sass 编译错误 >> ' )
+  messager.notice( 'Sass 编译错误 >> ' )
 
-  messager.error( `Sass 编译错误: ${ msg.file.split( '/' ).pop( ) }文件 line${ msg.line } >> ${ msg.message.replace(/\"/g,'\'') }` )
-
-  messager.notice( `Sass编译错误: ${ msg.file.split( '/' ).pop( ) }文件 line${ msg.line }` )
+  messager.error( `Sass 编译错误: ${ msg.file.split( '/' ).pop( ) }文件 line ${ msg.line }, col ${ msg.col }: ${ msg.message.replace(/\"/g,'\'') }` )
 
   this.emit('end')
 }
-const styleErrorNotifier = function (msg) {
-
-  console.log(msg)
-
-  this.emit('end')
+const styleErrorNotifier = function (stylelintResults) {
+  if (stylelintResults.length > 0) {
+    messager.notice('Sass 样式检查错误 >> ')
+    stylelintResults.forEach(function(stylelintResult) {
+      if (!stylelintResult.warnings.length) {
+        return false
+      }
+      let fileName = escape(stylelintResult.source)
+      messager.error( `Sass 样式检查错误: ${ fileName }文件`)
+      stylelintResult.warnings.forEach(function(warning) {
+        messager.error( `line ${ escape(warning.line) }, col ${ escape(warning.column) }: ${ escape(warning.text) }` )
+      })
+    })
+  }
 }
-module.exports = (gulp, common) => {
+module.exports = (gulp, common) => new Promise(resolve => {
+
   const { projectPath, assetsPath } = common.config
   messager = common.messager
   const sassPath = path.resolve(projectPath, './src/sass/**/*.scss')
@@ -30,11 +40,14 @@ module.exports = (gulp, common) => {
       extension: '.css'
     }))
     .pipe(common.plugins.stylelint({
-      reporters: [
-        {formatter: 'string', console: true}
-      ]
+      reporters: [{
+        formatter: styleErrorNotifier
+      }]
     }))
-    .on('error', styleErrorNotifier)
+    .on('error', function(){
+      this.emit('end')
+      resolve()
+    })
     .pipe(common.plugins.sourcemaps.init())
     .pipe(common.plugins.sass())
     .on('error', sassErrorNotifier)
@@ -45,4 +58,7 @@ module.exports = (gulp, common) => {
     .pipe(common.plugins.sourcemaps.write())
     .pipe(gulp.dest(distPath))
     .pipe(common.reload({ stream: true } ))
-}
+    .on( 'end', ( ) => {
+      resolve()
+    })
+})

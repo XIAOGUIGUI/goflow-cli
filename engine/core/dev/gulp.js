@@ -24,7 +24,7 @@ module.exports = async (config) => {
   common.config = config
   const { projectPath, buildDistPath } = config
   del.sync([buildDistPath], { force: true })
-  TaskSass(gulp, common)
+  await TaskSass(gulp, common)
   plugins.watch(path.resolve(projectPath, './src/sass/**/*.scss'), () => {
     TaskSass(gulp, common)
   })

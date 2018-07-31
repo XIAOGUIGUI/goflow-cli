@@ -73,7 +73,9 @@
     }],
     "no-extra-semicolons": true,
     "no-invalid-double-slash-comments": true,
-    "no-missing-end-of-source-newline": true,
+    "no-missing-end-of-source-newline": [true, {
+      "message": "文件末尾必须空一行。"
+    }],
     "no-unknown-animations": true
   }
 }

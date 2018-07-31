@@ -7,7 +7,6 @@ module.exports = (gulp, common) => {
   const artPath = path.resolve(projectPath, './src/art/*.html')
   const srcHtmPath = path.resolve(projectPath, './src/*.html')
   const artCommonPath = path.resolve(projectPath, './src/art/common')
-  console.log(publicAssetsPath)
   gulp.src([srcHtmPath, artPath])
     .pipe(common.plugins.changed(buildDistPath))
     .pipe(common.plugins.htmlTpl({
