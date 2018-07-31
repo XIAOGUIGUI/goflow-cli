@@ -2,21 +2,25 @@
 const path = require('path')
 const artTemplate = require('art-template')
 module.exports = (gulp, common) => {
-  const { projectPath, buildDist } = common.config
+  
+  const { projectPath, buildDistPath, publicAssetsPath } = common.config
   const artPath = path.resolve(projectPath, './src/art/*.html')
+  const srcHtmPath = path.resolve(projectPath, './src/*.html')
   const artCommonPath = path.resolve(projectPath, './src/art/common')
-  gulp.src(artPath)
-    .pipe(common.plugins.changed(buildDist))
+  console.log(publicAssetsPath)
+  gulp.src([srcHtmPath, artPath])
+    .pipe(common.plugins.changed(buildDistPath))
     .pipe(common.plugins.htmlTpl({
       tag: 'template',
       paths: [artCommonPath],
       engine: function(template, data) {
+        data.publicAssetsPath = publicAssetsPath
         return artTemplate.compile(template)(data)
       }
     }))
     .on('error', e => {
       console.error(`[ART ERROR]: ${e.message}`)
     })
-    .pipe(gulp.dest(buildDist))
+    .pipe(gulp.dest(buildDistPath))
     .pipe(common.reload({stream: true}))
 }

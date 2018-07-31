@@ -8,6 +8,7 @@ const browserSync = require('browser-sync')
 const reload = browserSync.reload
 const TaskArt = require('../basicTasks/TaskArt')
 const TaskArtLang = require('../basicTasks/TaskArtLang')
+const TaskSass = require('../basicTasks/TaskSass')
 const SERVER = require('./browserSync')
 
 
@@ -21,16 +22,25 @@ common.reload = reload
 common.messager = messager
 module.exports = async (config) => {
   common.config = config
-  const { projectPath, buildDist } = config
-  del.sync([buildDist], { force: true })
+  const { projectPath, buildDistPath } = config
+  del.sync([buildDistPath], { force: true })
+  TaskSass(gulp, common)
+  plugins.watch(path.resolve(projectPath, './src/sass/**/*.scss'), () => {
+    TaskSass(gulp, common)
+  })
   TaskArt(gulp, common)
   TaskArtLang(gulp, common)
-  await SERVER(browserSync, config)
+  plugins.watch(path.resolve(projectPath, './src/*.html'), () => {
+    TaskArt(gulp, common)
+  })
   plugins.watch(path.resolve(projectPath, './src/art/*.html'), () => {
     TaskArt(gulp, common)
   })
   plugins.watch(path.resolve(projectPath, './src/art/lang/*.html'), () => {
     TaskArtLang(gulp, common)
   })
+
+  await SERVER(browserSync, config)
+  
   messager.success()
 }

@@ -1,3 +1,4 @@
+const path = require('path')
 const network = require('network')
 const findFreePort = require('find-free-port-sync')
 const gulp = require('./core/dev/gulp')
@@ -23,6 +24,8 @@ const start = async (config) => {
     start: port,
     end: port + 10
   })
+  config.publicAssetsPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
+  config.assetsPath = path.resolve(config.buildDistPath, config.dev.assetsSubDirectory)
   if ( config.mode !== 'webpack' ) {
     await gulp(config)
   }

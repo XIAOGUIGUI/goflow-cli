@@ -10,7 +10,7 @@ module.exports = async (flag, env) => {
   const projectPath = process.cwd()
 	const configPath = path.join(projectPath, '/app-config.js')
 	let config = {}
-  if (fs.ensureFileSync(configPath)) {
+  if (!fs.existsSync(configPath)) {
     print.error('找不到项目配置文件，请检查路径')
     return void 0
   } else {
@@ -25,7 +25,7 @@ module.exports = async (flag, env) => {
 		
 		config = _.defaultsDeep(projectConfig, defineConfig)
 		config.projectPath = projectPath
-		config.buildDist = path.resolve(projectPath, './dist')
+		config.buildDistPath = path.resolve(projectPath, './dist')
 	}
 	return config
 }

@@ -1,7 +1,7 @@
 let browserSync = void 0;
 let config = void 0;
 let server = resolve => {
-  const { buildDist } = config
+  const { buildDistPath } = config
   const { port, ip, startPath, autoOpenBrowser } = config.dev
   const options = {
     https: false,
@@ -11,7 +11,7 @@ let server = resolve => {
     port,
     timestamps: true,
     server: {
-      baseDir: buildDist
+      baseDir: buildDistPath
     },
     open: 'external',
     scriptPath(path, port) {
