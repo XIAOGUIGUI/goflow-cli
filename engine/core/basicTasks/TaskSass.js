@@ -8,9 +8,10 @@ let styleErrorResult = []
 let fileSplitString = `src${ path.sep }sass${ path.sep }`
 let messager
 const sassErrorNotifier = function (msg) {
-  console.log( 'Sass 编译错误 >> ', msg )
+  let fileName = msg.file.split(fileSplitString)[1]
   messager.notice( 'Sass 编译错误 >> ' )
-  messager.error( `Sass 编译错误: ${ msg.file.split( '/' ).pop( ) }文件 line ${ msg.line }, col ${ msg.col }: ${ msg.message.replace(/\"/g,'\'') }` )
+  messager.error( `Sass 编译错误: ${ fileName }文件`)
+  messager.error( `line ${ msg.line }, col ${ msg.column }: ${ msg.messageOriginal }` )
   this.emit('end')
 }
 // 输出代码格式错误信息

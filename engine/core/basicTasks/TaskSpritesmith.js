@@ -1,4 +1,5 @@
 const path = require('path')
+const spritesmith = require('gulp.spritesmith')
 var templateFunction = function (data) {
   if (data.sprites.length === 0) {
     return ''
@@ -6,6 +7,11 @@ var templateFunction = function (data) {
   let spritesName = data.sprites[0].image.replace(/(.*\/)*([^.]+).*/ig,"$2")
   let spritesheetName = ''
   let spritesheetClass = ''
+  let templateConfig = {
+    spritesheetNameMap: {},
+    spriteNameMap: {},
+    spritesheetClassMap: {}
+  }
   if (templateConfig && templateConfig.spritesheetNameMap[spritesName]) {
     spritesheetName = templateConfig.spritesheetNameMap[spritesName]
   } else {
@@ -43,9 +49,19 @@ var templateFunction = function (data) {
     spritesheetClass = templateConfig.spritesheetClassMap[spritesName]
     shared.replace('\t', '\t\t')
     perSprite.replace('\t', '\t\t')
-    return spritesheetClass + '{\n\t' + shared + '\n' + perSprite + '\n}';
+    return spritesheetClass + '{\n\t' + shared + '\n' + perSprite + '\n}\n';
   } else {
-    return shared + '\n' + perSprite;
+    return shared + '\n' + perSprite + '\n';
   }
 }
-module.exports = (gulp, common, options) => {}
+module.exports = (gulp, common, options) => {
+  const { projectPath } = common.config
+  const spritesDestPath = path.resolve(projectPath, './src/img/')
+  gulp.src(options.srcPath)
+  .pipe(spritesmith({
+    imgName: `${options.name}.png`,
+    cssName: `../sass/sprite/${options.name}.scss`,
+    cssTemplate: templateFunction
+  }))
+  .pipe(gulp.dest(spritesDestPath))
+}
