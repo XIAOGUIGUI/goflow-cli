@@ -1,32 +1,59 @@
 const path = require('path')
 const through = require('through2')
 const escape = require('lodash/escape')
+const postcssAutoprefixer = require('autoprefixer');
+const postcssPxtorem = require('postcss-pxtorem');
 
-let sassCompileError = false
-let sassCompileSuccess = false
+let styleErrorResult = []
+let fileSplitString = `src${ path.sep }sass${ path.sep }`
 let messager
 const sassErrorNotifier = function (msg) {
-
+  console.log( 'Sass 编译错误 >> ', msg )
   messager.notice( 'Sass 编译错误 >> ' )
-
   messager.error( `Sass 编译错误: ${ msg.file.split( '/' ).pop( ) }文件 line ${ msg.line }, col ${ msg.col }: ${ msg.message.replace(/\"/g,'\'') }` )
-
   this.emit('end')
 }
-const styleErrorNotifier = function (stylelintResults) {
-  if (stylelintResults.length > 0) {
-    messager.notice('Sass 样式检查错误 >> ')
-    stylelintResults.forEach(function(stylelintResult) {
-      if (!stylelintResult.warnings.length) {
-        return false
-      }
-      let fileName = escape(stylelintResult.source)
-      messager.error( `Sass 样式检查错误: ${ fileName }文件`)
-      stylelintResult.warnings.forEach(function(warning) {
-        messager.error( `line ${ escape(warning.line) }, col ${ escape(warning.column) }: ${ escape(warning.text) }` )
-      })
+// 输出代码格式错误信息
+const styleErrorNotifier = function () {
+  messager.notice('Sass 样式检查错误 >> ')
+  styleErrorResult.forEach(function(result) {
+    messager.error( `Sass 样式检查错误: ${ result.fileName }文件`)
+    result.warnings.forEach(function(warning) {
+      messager.error( `line ${ escape(warning.line) }, col ${ escape(warning.column) }: ${ escape(warning.text) }` )
     })
+  })
+  styleErrorResult = []
+}
+// 格式化样式检查数据
+const styleErrorFormatter = function (stylelintResults) {
+  stylelintResults.forEach(function(result) {
+    if (result.warnings.length === 0) {
+      return false
+    }
+    let resultObject = {
+      warnings: []
+    }
+    let filePathList = escape(result.source).split(fileSplitString)
+    resultObject.fileName = filePathList[1]
+    
+    result.warnings.forEach(function(warning) {
+      resultObject.warnings.push(warning)
+    })
+    styleErrorResult.push(resultObject)
+  })
+  if (styleErrorResult.length > 0) {
+    styleErrorNotifier()
   }
+}
+let getPostcssList = config => {
+  let result = [postcssAutoprefixer({
+    browsers: config.browserslist,
+    cascade: true,
+    remove: false})]
+  if (config.px2rem.enable === true) {
+    result.push(postcssPxtorem(config.px2rem))
+  }
+  return result
 }
 module.exports = (gulp, common) => new Promise(resolve => {
 
@@ -41,24 +68,28 @@ module.exports = (gulp, common) => new Promise(resolve => {
     }))
     .pipe(common.plugins.stylelint({
       reporters: [{
-        formatter: styleErrorNotifier
+        formatter: styleErrorFormatter
       }]
     }))
-    .on('error', function(){
+    .on('error', function(){  
       this.emit('end')
       resolve()
     })
     .pipe(common.plugins.sourcemaps.init())
     .pipe(common.plugins.sass())
     .on('error', sassErrorNotifier)
-    .pipe( through.obj( ( file, enc, cb ) => {
-      sassCompileSuccess = true
+    .pipe(through.obj( ( file, enc, cb ) => {
       cb( null, file )
     }))
+    .pipe(common.plugins.postcss(getPostcssList(common.config)))
+    .on('error', function(e){  
+      console.log(e)
+    })
     .pipe(common.plugins.sourcemaps.write())
     .pipe(gulp.dest(distPath))
-    .pipe(common.reload({ stream: true } ))
-    .on( 'end', ( ) => {
+    .on('end', ( ) => {
       resolve()
     })
+    .pipe(common.reload({ stream: true } ))
+    
 })

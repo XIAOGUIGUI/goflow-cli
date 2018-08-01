@@ -8,6 +8,7 @@ const browserSync = require('browser-sync')
 const reload = browserSync.reload
 const TaskArt = require('../basicTasks/TaskArt')
 const TaskArtLang = require('../basicTasks/TaskArtLang')
+const TaskCopy = require('../basicTasks/TaskCopy')
 const TaskSass = require('../basicTasks/TaskSass')
 const SERVER = require('./browserSync')
 
@@ -24,6 +25,14 @@ module.exports = async (config) => {
   common.config = config
   const { projectPath, buildDistPath } = config
   del.sync([buildDistPath], { force: true })
+  TaskCopy(gulp, common, {
+    directory: './static',
+    base: true
+  })
+  TaskCopy(gulp, common, {
+    directory: './src/font',
+    distDirectory: 'font'
+  })
   await TaskSass(gulp, common)
   plugins.watch(path.resolve(projectPath, './src/sass/**/*.scss'), () => {
     TaskSass(gulp, common)
