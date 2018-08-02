@@ -1,5 +1,6 @@
 const path = require('path')
 const spritesmith = require('gulp.spritesmith')
+let isRem = false
 var templateFunction = function (data) {
   if (data.sprites.length === 0) {
     return ''
@@ -30,15 +31,23 @@ var templateFunction = function (data) {
     } else {
       name = `.icon-${name}`
     }
-    let x = sprite.offset_x
-    if (x !== 0) {
-      x = x /(sprite.width - data.spritesheet.width) * 100
+    let x
+    let y
+    if (isRem && sprite.offset_x !== 0) {
+      x = (sprite.offset_x /(sprite.width - data.spritesheet.width) * 100)+ '%'
+    } else if (sprite.offset_x !== 0) {
+      x = sprite.offset_x + 'px'
+    } else {
+      x = sprite.offset_x
     }
-    let y = sprite.offset_y
-    if (y !== 0) {
-      y = y /(sprite.height - data.spritesheet.height) * 100
+    if (isRem && sprite.offset_y !== 0) {
+      y = (sprite.offset_y /(sprite.height - data.spritesheet.height) * 100)+ '%'
+    } else if (sprite.offset_y !== 0) {
+      y = sprite.offset_y + 'px'
+    } else {
+      y = sprite.offset_y
     }
-    return 'N {\n\twidth: Wpx;\n\theight: Hpx;\n\tbackground-position: X% Y%;\n}'
+    return 'N {\n\twidth: Wpx;\n\theight: Hpx;\n\tbackground-position: X Y;\n}'
         .replace('N', name)
         .replace('W', sprite.width + 1)
         .replace('H', sprite.height + 1)
@@ -55,12 +64,17 @@ var templateFunction = function (data) {
   }
 }
 module.exports = (gulp, common, options) => {
-  const { projectPath } = common.config
+  const { projectPath, spritesmith:spritesmithConfign, px2rem } = common.config
+  const { algorithm, padding} = spritesmithConfign
+  isRem = px2rem.enable
   const spritesDestPath = path.resolve(projectPath, './src/img/')
   gulp.src(options.srcPath)
   .pipe(spritesmith({
     imgName: `${options.name}.png`,
+    imgPath: `../img/${options.name}.png`,
     cssName: `../sass/sprite/${options.name}.scss`,
+    algorithm,
+    padding,
     cssTemplate: templateFunction
   }))
   .pipe(gulp.dest(spritesDestPath))

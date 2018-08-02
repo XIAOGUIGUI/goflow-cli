@@ -8,6 +8,10 @@ module.exports = {
     replace: true,
     media_query: false
   },
+  spritesmith: {
+    algorithm: 'binary-tree',
+    padding: 4
+  },
   lang: {
     defulteLang: 'en'
   },

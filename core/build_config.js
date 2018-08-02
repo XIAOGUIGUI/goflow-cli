@@ -6,6 +6,7 @@ const _ = require('lodash')
 const localConfig = require('./local_config')
 
 module.exports = async (flag, env) => {
+	const root = path.resolve( __dirname, '../' );
 	const defineConfig = require('../config/workflow-config');
   const projectPath = process.cwd()
 	const configPath = path.join(projectPath, '/app-config.js')
@@ -24,6 +25,7 @@ module.exports = async (flag, env) => {
 		defineConfig.dev.autoOpenBrowser = typeof autoOpenChrome !== 'undefined' ? autoOpenChrome : true
 		
 		config = _.defaultsDeep(projectConfig, defineConfig)
+		config.root = root
 		config.projectPath = projectPath
 		config.buildDistPath = path.resolve(projectPath, './dist')
 	}

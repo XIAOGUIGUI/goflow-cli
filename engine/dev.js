@@ -20,9 +20,8 @@ const start = async (config) => {
   }
   config.dev.ip = localIP
   const port = parseInt(config.dev.port)
-  config.dev.port = findFreePort({
-    start: port,
-    end: port + 10
+  findFreePort( port, port + 10, localIP, (freePort ) => {
+    config.dev.port = freePort
   })
   config.publicAssetsPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
   config.assetsPath = path.resolve(config.buildDistPath, config.dev.assetsSubDirectory)
