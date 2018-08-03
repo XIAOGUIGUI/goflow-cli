@@ -44,7 +44,8 @@
     "override-modules": "0.0.1",
     "postcss-pxtorem": "^4.0.1",
     "stylelint": "^9.4.0",
-    "through2": "^2.0.3"
+    "through2": "^2.0.3",
+    "zepto": "^1.2.0"
   },
   "devDependencies": {
     "fs-extra": "^7.0.0"

@@ -27,6 +27,8 @@ module.exports = async (flag, env) => {
 		config = _.defaultsDeep(projectConfig, defineConfig)
 		config.root = root
 		config.projectPath = projectPath
+		config.appNodeModules = path.resolve(root, './node_modules')
+    config.localNodeModules = path.resolve(projectPath, './node_modules')
 		config.buildDistPath = path.resolve(projectPath, './dist')
 	}
 	return config
