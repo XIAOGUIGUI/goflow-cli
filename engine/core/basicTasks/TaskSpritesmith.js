@@ -72,7 +72,7 @@ module.exports = (gulp, common, options) => {
   .pipe(spritesmith({
     imgName: `${options.name}.png`,
     imgPath: `../img/${options.name}.png`,
-    cssName: `../sass/sprite/${options.name}.scss`,
+    cssName: `../sass/sprite/_${options.name}.scss`,
     algorithm,
     padding,
     cssTemplate: templateFunction

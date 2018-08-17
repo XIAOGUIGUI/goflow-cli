@@ -2,11 +2,7 @@ const path = require('path')
 
 const del = require('del')
 const gulp = require('gulp')
-const plugins = require('gulp-load-plugins')({
-  rename: {}
-})
-const browserSync = require('browser-sync')
-const reload = browserSync.reload
+
 const TaskArt = require('../basicTasks/TaskArt')
 const TaskArtLang = require('../basicTasks/TaskArtLang')
 
@@ -16,26 +12,16 @@ const TaskSass = require('../basicTasks/TaskSass')
 const SPRITES = require('./sprites')
 const SERVER = require('./browserSync')
 
-
-
-const Messager = require('../../messager.js')
-const messager = new Messager()
-
-// 创建 common 对象
-var common = {}
-common.plugins = plugins
-common.reload = reload
-common.messager = messager
 module.exports = async (config) => {
-  common.config = config
-  const { projectPath, buildDistPath } = config
+  common = require('../common/common')(config, 'dev')
+  const { projectPath, buildDistPath } = common.config
   del.sync([buildDistPath], { force: true })
   SPRITES(gulp, common)
   TaskCopy(gulp, common, {
     directory: './static',
     base: true
   })
-  plugins.watch(path.resolve(projectPath, './static'), () => {
+  common.plugins.watch(path.resolve(projectPath, './static'), () => {
     TaskCopy(gulp, common, {
       directory: './static',
       base: true
@@ -45,7 +31,7 @@ module.exports = async (config) => {
     directory: './src/img',
     distDirectory: 'img'
   })
-  plugins.watch(path.resolve(projectPath, './src/img'), () => {
+  common.plugins.watch(path.resolve(projectPath, './src/img'), () => {
     TaskCopy(gulp, common, {
       directory: './src/img',
       distDirectory: 'img'
@@ -55,36 +41,37 @@ module.exports = async (config) => {
     directory: './src/font',
     distDirectory: 'font'
   })
-  plugins.watch(path.resolve(projectPath, './src/font'), () => {
+  common.plugins.watch(path.resolve(projectPath, './src/font'), () => {
     TaskCopy(gulp, common, {
       directory: './src/font',
       distDirectory: 'font'
     })
   })
   TaskBabel(gulp, common)
-  plugins.watch(path.resolve(projectPath, './src/js/**/*.js'), () => {
+  common.plugins.watch(path.resolve(projectPath, './src/js/**/*.js'), () => {
     TaskBabel(gulp, common)
   })
   await TaskSass(gulp, common)
-  plugins.watch(path.resolve(projectPath, './src/sass/**/*.scss'), () => {
+  common.plugins.watch(path.resolve(projectPath, './src/sass/**/*.scss'), () => {
     TaskSass(gulp, common)
   })
   TaskArt(gulp, common)
   TaskArtLang(gulp, common)
-  plugins.watch(path.resolve(projectPath, './src/*.html'), () => {
+  common.plugins.watch(path.resolve(projectPath, './src/*.html'), () => {
     TaskArt(gulp, common)
   })
-  plugins.watch(path.resolve(projectPath, './src/art/*.html'), () => {
-    TaskArt(gulp, common)
+  common.plugins.watch(path.resolve(projectPath, './src/art_lang/*.html'), () => {
+    TaskArtLang(gulp, common)
   })
-  plugins.watch(path.resolve(projectPath, './src/art/lang/*.html'), () => {
+  common.plugins.watch(path.resolve(projectPath, './src/art_common/*.html'), () => {
+    TaskArt(gulp, common)
     TaskArtLang(gulp, common)
   })
 
-  await SERVER(browserSync, config)
+  await SERVER(common.config)
   // 入口文件增加或删除提示重启加入webpack构建中
-  plugins.watch(path.resolve(projectPath, './app-config.js'), () => {
-    messager.notice( '项目配置文件变动, 请重启工作流使用最新配置' )
+  common.plugins.watch(path.resolve(projectPath, './app-config.js'), () => {
+    common.messager.notice( '项目配置修改后, 重启工作流后生效' )
   })
-  messager.success()
+  common.messager.success()
 }

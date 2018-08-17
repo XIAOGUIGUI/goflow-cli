@@ -1,18 +1,18 @@
 const path = require('path')
-const through = require('through2')
 const escape = require('lodash/escape')
 const postcssAutoprefixer = require('autoprefixer');
 const postcssPxtorem = require('postcss-pxtorem');
-
+let DEV
 let styleErrorResult = []
-let fileSplitString = `src${ path.sep }sass${ path.sep }`
 let messager
 const sassErrorNotifier = function (msg) {
-  let fileName = msg.file.split(fileSplitString)[1]
+  let fileName = path.basename(msg.file)
   messager.notice( 'Sass 编译错误 >> ' )
   messager.error( `Sass 编译错误: ${ fileName }文件`)
   messager.error( `line ${ msg.line }, col ${ msg.column }: ${ msg.messageOriginal }` )
-  this.emit('end')
+  if (DEV === true) {
+    this.emit('end')
+  }
 }
 // 输出代码格式错误信息
 const styleErrorNotifier = function () {
@@ -23,10 +23,10 @@ const styleErrorNotifier = function () {
       messager.error( `line ${ escape(warning.line) }, col ${ escape(warning.column) }: ${ escape(warning.text) }` )
     })
   })
-  styleErrorResult = []
 }
 // 格式化样式检查数据
 const styleErrorFormatter = function (stylelintResults) {
+  styleErrorResult = []
   stylelintResults.forEach(function(result) {
     if (result.warnings.length === 0) {
       return false
@@ -34,8 +34,7 @@ const styleErrorFormatter = function (stylelintResults) {
     let resultObject = {
       warnings: []
     }
-    let filePathList = escape(result.source).split(fileSplitString)
-    resultObject.fileName = filePathList[1]
+    resultObject.fileName = path.basename(result.source)
     
     result.warnings.forEach(function(warning) {
       resultObject.warnings.push(warning)
@@ -57,7 +56,7 @@ let getPostcssList = config => {
   return result
 }
 module.exports = (gulp, common) => new Promise(resolve => {
-
+  DEV = process.env.NODE_ENV === 'dev'
   const { projectPath, assetsPath } = common.config
   messager = common.messager
   const sassPath = path.resolve(projectPath, './src/sass/**/*.scss')
@@ -72,25 +71,41 @@ module.exports = (gulp, common) => new Promise(resolve => {
         formatter: styleErrorFormatter
       }]
     }))
-    .on('error', function(){  
-      this.emit('end')
-      resolve()
+    .on('error', function(e){
+      if (DEV === true) {
+        this.emit('end')
+        resolve()
+      }
     })
-    .pipe(common.plugins.sourcemaps.init())
+    .pipe(common.plugins.if(DEV,common.plugins.sourcemaps.init()))
     .pipe(common.plugins.sass())
     .on('error', sassErrorNotifier)
-    .pipe(through.obj( ( file, enc, cb ) => {
-      cb( null, file )
-    }))
+    .pipe(common.plugins.if(!DEV,common.plugins.cssBase64({
+      baseDir: '../img/',
+      maxWeightResource: 1024 * 10,
+      extensionsAllowed: [ '.png', '.jpg', 'gif', 'jpeg', 'svg' ],
+    })))
     .pipe(common.plugins.postcss(getPostcssList(common.config)))
-    .on('error', function(e){  
+    .on('error', function(e){
       console.log(e)
     })
-    .pipe(common.plugins.sourcemaps.write())
+    .pipe(common.plugins.if(!DEV,common.plugins.cssnano({
+      safe: true,
+      reduceTransforms: false,
+      advanced: false,
+      compatibility: 'ie8',
+      keepSpecialComments: 0
+    })))
+    .pipe(common.plugins.if(DEV,common.plugins.sourcemaps.write()))
     .pipe(gulp.dest(distPath))
     .on('end', ( ) => {
-      resolve()
+      if (DEV === false && styleErrorResult.length === 0) {
+        messager.log( 'Sass 构建完成' )
+        resolve()
+      } else if (DEV === true) {
+        resolve()
+      }
     })
-    .pipe(common.reload({ stream: true } ))
+    .pipe(common.plugins.if(DEV, common.reload({ stream: true } )))
     
 })

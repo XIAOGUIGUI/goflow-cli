@@ -36,7 +36,11 @@ program.command( 'build [env]' )
     if (!env) {
       env = 'prod'
     }
-    workflow('build', env, cmd)
+    if (env !== 'prod' && env !== 'testing' ) {
+      console.log(chalk.red( `! The env parameter only supports prod or testing.` ))
+    } else {
+      workflow('build', env, cmd)
+    }
   })
 program.on( 'command:*', function ( ) {
   console.log(chalk.yellow( `! Command not found. Please try to use ${ chalk.yellow.bold( '-h' ) }` ))

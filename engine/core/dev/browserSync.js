@@ -1,4 +1,4 @@
-let browserSync = void 0;
+const browserSync = require('browser-sync')
 let config = void 0;
 let server = resolve => {
   const { buildDistPath, localNodeModules, appNodeModules } = config
@@ -11,7 +11,7 @@ let server = resolve => {
     port,
     timestamps: true,
     server: {
-      baseDir: [buildDistPath,localNodeModules, appNodeModules]
+      baseDir: [buildDistPath, localNodeModules, appNodeModules]
     },
     open: 'external',
     scriptPath(path, port) {
@@ -44,8 +44,7 @@ let server = resolve => {
     resolve()
   })
 }
-module.exports = (_browserSync, _config) => new Promise(resolve => {
-  browserSync = _browserSync
+module.exports = (_config) => new Promise(resolve => {
   config = _config
   server(resolve)
 })

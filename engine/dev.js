@@ -1,4 +1,3 @@
-const path = require('path')
 const network = require('network')
 const findFreePort = require('find-free-port-sync')
 const gulp = require('./core/dev/gulp')
@@ -18,13 +17,12 @@ const start = async (config) => {
   }else if (getLocalIPCounter >= 10) {
     localIP = '127.0.0.1'
   }
+  process.env.NODE_ENV = 'dev'
   config.dev.ip = localIP
   const port = parseInt(config.dev.port)
   findFreePort( port, port + 10, localIP, (freePort ) => {
     config.dev.port = freePort
   })
-  config.publicAssetsPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
-  config.assetsPath = path.resolve(config.buildDistPath, config.dev.assetsSubDirectory)
   if ( config.mode !== 'webpack' ) {
     await gulp(config)
   }

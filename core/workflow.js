@@ -20,10 +20,11 @@ module.exports = async (flag = 'build', env = '', cmd = {}) => {
   Messager.sender = ({ type, msg }) => {
     if ( type === 'success' ) {
       print.success( flag === 'dev' ? (workflowConfig.mode === 'webpack' ? `http://${ msg.ip }:${ msg.bsPort }` : 'started dev service') : 'build finish' );
-    } else if (type === 'stop') {
-      process.exit(1)
     } else {
       sender({ type, msg })
+    }
+    if (type === 'stop') {
+      process.exit(1)
     }
   }
   require(`../engine/${ flag }`)(workflowConfig)

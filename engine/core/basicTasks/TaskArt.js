@@ -1,25 +1,38 @@
 // 处理art-template页面
 const path = require('path')
-const artTemplate = require('art-template')
-module.exports = (gulp, common) => {
-  
+module.exports = (gulp, common, callBack) => {
+  const DEV = process.env.NODE_ENV === 'dev'
   const { projectPath, buildDistPath, publicAssetsPath } = common.config
-  const artPath = path.resolve(projectPath, './src/art/*.html')
-  const srcHtmPath = path.resolve(projectPath, './src/*.html')
-  const artCommonPath = path.resolve(projectPath, './src/art/common')
-  gulp.src([srcHtmPath, artPath])
+  const { userArgs } = common.config[process.env.NODE_ENV]
+  const srcPath = path.resolve(projectPath, './src/*.html')
+  const artCommonPath = path.resolve(projectPath, './src/art_common')
+  let data = {
+    publicAssetsPath,
+    userArgs,
+    DEBUG: DEV
+  }
+  gulp.src(srcPath)
     .pipe(common.plugins.changed(buildDistPath))
-    .pipe(common.plugins.htmlTpl({
-      tag: 'template',
+    .pipe(common.plugins.htmlArt({
       paths: [artCommonPath],
-      engine: function(template, data) {
-        data.publicAssetsPath = publicAssetsPath
-        return artTemplate.compile(template)(data)
-      }
+      data
     }))
     .on('error', e => {
-      console.error(`[ART ERROR]: ${e.message}`)
+      let fileName = path.basename(e.file)
+      common.messager.notice( 'ART 编译错误 >> ' )
+      common.messager.error( `ART 编译错误: ${ fileName }文件`)
+      if (e.type === 'TemplateError') {
+        common.messager.error( `line ${ e.line }, col ${ e.column }: ${ e.message }` )
+      } else {
+        common.messager.error( `错误原因: ${  e.message }`)
+      }
     })
     .pipe(gulp.dest(buildDistPath))
-    .pipe(common.reload({stream: true}))
+    .on('end', ( ) => {
+      if (DEV === false) {
+        common.messager.log( 'ART 编译完成' )
+      }
+      callBack && callBack()
+    })
+    .pipe(common.plugins.if(DEV, common.reload({ stream: true } )))
 }
