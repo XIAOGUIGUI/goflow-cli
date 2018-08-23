@@ -1,18 +1,25 @@
 // 处理art-template页面
 const path = require('path')
-module.exports = (gulp, common, callBack) => {
+module.exports = (gulp, common, other,) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { projectPath, buildDistPath, publicAssetsPath } = common.config
   const { userArgs } = common.config[process.env.NODE_ENV]
   const srcPath = path.resolve(projectPath, './src/*.html')
   const artCommonPath = path.resolve(projectPath, './src/art_common')
+  let hasChange = true
+  let callBack
+  if (typeof other === 'function') {
+    callBack = other
+  } else if (typeof other === 'boolean') {
+    hasChange = other
+  }
   let data = {
     publicAssetsPath,
     userArgs,
     DEBUG: DEV
   }
   gulp.src(srcPath)
-    .pipe(common.plugins.changed(buildDistPath))
+    .pipe(common.plugins.if(hasChange, common.plugins.changed(buildDistPath)))
     .pipe(common.plugins.htmlArt({
       paths: [artCommonPath],
       data

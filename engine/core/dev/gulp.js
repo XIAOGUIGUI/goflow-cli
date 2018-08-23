@@ -64,8 +64,8 @@ module.exports = async (config) => {
     TaskArtLang(gulp, common)
   })
   common.plugins.watch(path.resolve(projectPath, './src/art_common/*.html'), () => {
-    TaskArt(gulp, common)
-    TaskArtLang(gulp, common)
+    TaskArt(gulp, common, false)
+    TaskArtLang(gulp, common, false)
   })
 
   await SERVER(common.config)
