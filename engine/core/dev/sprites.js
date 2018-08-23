@@ -50,7 +50,7 @@ module.exports = (gulp, common) => {
         let pngPath = path.resolve(projectPath, `./src/img/${fileName}.png`)
         let sassPath = path.resolve(projectPath, `./src/sass/sprite/${fileName}.scss`)
         del.sync([pngPath, sassPath], { force: true })
-        spritesWatchObject[fileName].close()
+        spritesWatchObject[fileName] && spritesWatchObject[fileName].close()
       }
     }
   }).on('ready', function () {

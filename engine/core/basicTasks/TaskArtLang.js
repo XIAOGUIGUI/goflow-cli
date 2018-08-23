@@ -1,13 +1,19 @@
 // 处理多语言art-template页面
 const path = require('path')
-module.exports = (gulp, common, langStr, resolve) => {
+module.exports = (gulp, common, other, resolve) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { projectPath, buildDistPath, publicAssetsPath } = common.config
   const { userArgs } = common.config[process.env.NODE_ENV]
   const defulteLang = common.config.lang && common.config.lang.defulteLang ? common.config.lang.defulteLang : 'en'
   const artPath = path.resolve(projectPath, './src/art_lang/*.html')
   const artCommonPath = path.resolve(projectPath, './src/art_common')
-  let lang = langStr || defulteLang
+  let lang = defulteLang
+  let hasChange = true
+  if (typeof other === 'boolean') {
+    hasChange = other
+  } else if (typeof other === 'string') {
+    lang = other
+  }
   let fileName = ''
   let assetsPath = publicAssetsPath
   let langHtmlNameList = []
@@ -20,11 +26,13 @@ module.exports = (gulp, common, langStr, resolve) => {
     .pipe(common.plugins.rename(function (Filepath) {
       fileName = Filepath.basename;
       langHtmlNameList.push(fileName)
-      Filepath.dirname += '/' + Filepath.basename;
-      Filepath.basename = lang;
-      Filepath.extname = '.html';
+      if (!DEV) {
+        Filepath.dirname += '/' + Filepath.basename;
+        Filepath.basename = lang;
+        Filepath.extname = '.html';
+      } 
     }))
-    .pipe(common.plugins.changed(buildDistPath))
+    .pipe(common.plugins.if(hasChange, common.plugins.changed(buildDistPath)))
     .pipe(common.plugins.htmlArt({
       paths: [artCommonPath],
       formatData: function(data) {

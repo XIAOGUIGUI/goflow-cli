@@ -11,7 +11,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
   }
   if (resourcesDomain && resourcesDomain.length !== 0) {
     gulp.src(`${ buildDistPath }/**/*.html`)
-    .pipe(common.plugins.assets({
+    .pipe(common.plugins.domainReplace({
       assetsUrl: resourcesDomain,
       assetsPath: assetsSubDirectory,
       type: assetsSubDirectory
@@ -26,7 +26,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
   }
   if ((resourcesDomain && resourcesDomain.length !== 0) || (imgResourcesDomain && imgResourcesDomain.length !== 0)) {
     gulp.src(`${ assetsPath }/css/*.css`)
-    .pipe(common.plugins.assets({
+    .pipe(common.plugins.domainReplace({
       assetsUrl: resourcesDomain,
       imgUrl: imgResourcesDomain,
       assetsPath: assetsSubDirectory,
