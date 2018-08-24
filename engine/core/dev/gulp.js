@@ -12,8 +12,8 @@ const TaskSass = require('../basicTasks/TaskSass')
 const SPRITES = require('./sprites')
 const SERVER = require('./browserSync')
 
-module.exports = async (config) => {
-  common = require('../common/common')(config, 'dev')
+module.exports = async (common) => {
+  
   const { projectPath, buildDistPath } = common.config
   del.sync([buildDistPath], { force: true })
   SPRITES(gulp, common)
@@ -67,11 +67,5 @@ module.exports = async (config) => {
     TaskArt(gulp, common, false)
     TaskArtLang(gulp, common, false)
   })
-
   await SERVER(common.config)
-  // 入口文件增加或删除提示重启加入webpack构建中
-  common.plugins.watch(path.resolve(projectPath, './app-config.js'), () => {
-    common.messager.notice( '项目配置修改后, 重启工作流后生效' )
-  })
-  common.messager.success()
 }

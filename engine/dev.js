@@ -1,7 +1,7 @@
 const network = require('network')
 const findFreePort = require('find-free-port-sync')
 const gulp = require('./core/dev/gulp')
-
+const gulpWebpack = require('./core/dev/gulp-webpack')
 let localIP = void 0
 let getLocalIPCounter = 0
 
@@ -23,9 +23,20 @@ const start = async (config) => {
   findFreePort( port, port + 10, localIP, (freePort ) => {
     config.dev.port = freePort
   })
+  let common = require('./core/common/common')(config, 'dev')
+  const { projectPath } = common.config
   if ( config.mode !== 'webpack' ) {
-    await gulp(config)
+    await gulp(common)
+  } else {
+    await gulpWebpack(common)
   }
-  
+  // 入口文件增加或删除提示重启加入webpack构建中
+  common.plugins.watch(`${ projectPath }/app-config.js`, () => {
+    common.messager.notice( '项目配置修改后, 重启工作流后生效' )
+  })
+  common.messager.success({
+    ip: config.dev.ip,
+    bsPort: config.dev.port
+  })
 }
 module.exports = start
