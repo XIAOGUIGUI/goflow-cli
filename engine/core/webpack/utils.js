@@ -13,17 +13,17 @@ exports.assetsPath = function (_path, config) {
 
 exports.cssLoaders = function (options, config) {
   localConfig = config
+  const { appNodeModules } = config
   options = options || {}
-
   const cssLoader = {
-    loader: 'css-loader',
+    loader: path.resolve(appNodeModules, 'css-loader'),
     options: {
       minimize: process.env.NODE_ENV === 'production',
       sourceMap: options.sourceMap
     }
   }
   const px2remLoader = {
-    loader: 'px2rem-loader',
+    loader: path.resolve(appNodeModules, 'px2rem-loader'),
     options: {
       remUnit: localConfig.px2rem.root_value
     }
@@ -34,7 +34,7 @@ exports.cssLoaders = function (options, config) {
     
     if (loader) {
       loaders.push({
-        loader: `${loader}-loader`,
+        loader: require.resolve(`${loader}-loader`),
         options: Object.assign({}, loaderOptions, {
           sourceMap: options.sourceMap
         })
@@ -48,7 +48,7 @@ exports.cssLoaders = function (options, config) {
         }
       }].concat(loaders)
     } else {
-      return ['vue-style-loader'].concat(loaders)
+      return [path.resolve(appNodeModules, 'vue-style-loader')].concat(loaders)
     }
   }
   return {

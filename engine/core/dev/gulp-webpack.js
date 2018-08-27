@@ -3,6 +3,7 @@ const del = require('del')
 const gulp = require('gulp')
 
 const TaskArt = require('../basicTasks/TaskArt')
+const SPRITES = require('./sprites')
 const webpackServer = require('../webpack/dev-server')
 const toPromise = ( func, gulp, common ) => {
   return new Promise( ( resolve, reject ) => {
@@ -12,6 +13,7 @@ const toPromise = ( func, gulp, common ) => {
 module.exports = async (common) => {
   const { projectPath, buildDistPath } = common.config
   del.sync([buildDistPath], { force: true })
+  await toPromise(SPRITES, gulp, common)
   await toPromise(TaskArt, gulp, common)
   common.plugins.watch(path.resolve(projectPath, './src/*.html'), () => {
     TaskArt(gulp, common)

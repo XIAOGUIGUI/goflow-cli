@@ -14,7 +14,7 @@ module.exports = (config) => {
   const { root, buildDistPath, projectPath } = config
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
-  let plugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders)
+  let plugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders, config)
   let imgLoaderOptions = {
     limit: 10000,
     name: utils.assetsPath('img/[name].[hash:7].[ext]', config)
@@ -22,7 +22,6 @@ module.exports = (config) => {
   if (process.env.NODE_ENV !== 'dev') {
     imgLoaderOptions.publicPath = config.build.imgResourcesDomain
   }
-  console.log(vueLoaderConfig.config.loaders)
   // vueLoader添加happypack
   Object.assign(vueLoaderConfig.config.loaders, {
     js: require.resolve('happypack/loader') + '?id=happy-babel-vue'
@@ -65,9 +64,7 @@ module.exports = (config) => {
           loader: require.resolve('vue-loader'),
           include: [resolve('src')],
           exclude: /^node_modules$/,
-          options: {
-            loaders: vueLoaderConfig.cssLoaders
-          }
+          options: vueLoaderConfig.config
         },
         {
           test: /\.js$/,

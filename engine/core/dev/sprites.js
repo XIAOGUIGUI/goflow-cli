@@ -4,10 +4,10 @@ const del = require('del')
 const chokidar = require('chokidar')
 const TaskSpritesmith = require('../basicTasks/TaskSpritesmith')
 let spritesWatchObject
-module.exports = (gulp, common) => {
+module.exports = (gulp, common, resolve) => {
   const { projectPath } = common.config
   const spritesPath = path.resolve(projectPath, './src/img/slice/')
-  del.sync([path.resolve(projectPath, './src/sass/sprite/')], { force: true })
+  del.sync([path.resolve(projectPath, './src/sass/sprites/')], { force: true })
   spritesWatchObject = {}
   let spritesFiles = fs.readdirSync(spritesPath).filter(function(file){
     let filePath = path.join(spritesPath, file)
@@ -26,6 +26,7 @@ module.exports = (gulp, common) => {
       })
     })
   })
+  resolve && resolve()
   // 监听
   let ready = false
   chokidar.watch(spritesPath).on('addDir', filePath => {
