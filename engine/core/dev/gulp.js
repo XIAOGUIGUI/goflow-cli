@@ -8,6 +8,7 @@ const TaskArtLang = require('../basicTasks/TaskArtLang')
 
 const TaskCopy = require('../basicTasks/TaskCopy')
 const TaskBabel = require('../basicTasks/TaskBabel')
+const TaskLintJs = require('../lint/TaskJs')
 const TaskSass = require('../basicTasks/TaskSass')
 const SPRITES = require('./sprites')
 const SERVER = require('./browserSync')
@@ -47,8 +48,10 @@ module.exports = async (common) => {
       distDirectory: 'font'
     })
   })
+  TaskLintJs(gulp, common)
   TaskBabel(gulp, common)
   common.plugins.watch(path.resolve(projectPath, './src/js/**/*.js'), () => {
+    TaskLintJs(gulp, common)
     TaskBabel(gulp, common)
   })
   await TaskSass(gulp, common)
