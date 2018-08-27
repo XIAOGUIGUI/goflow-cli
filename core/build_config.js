@@ -16,10 +16,11 @@ module.exports = async (flag, env) => {
     return void 0
   } else {
 		let projectConfig = require(configPath)
+		defineConfig.dev = _.defaultsDeep(projectConfig.dev, defineConfig.dev)
 		if (flag == 'build' && projectConfig[env]) {
+			defineConfig.build = _.defaultsDeep(defineConfig.build, defineConfig.dev)
 			defineConfig.build = _.defaultsDeep(projectConfig[env], defineConfig.build)
 		}
-
 		const { autoOpenChrome, user } = localConfig.get()
     defineConfig.user = user
 		defineConfig.dev.autoOpenBrowser = typeof autoOpenChrome !== 'undefined' ? autoOpenChrome : true

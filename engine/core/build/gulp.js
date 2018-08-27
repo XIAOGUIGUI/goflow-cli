@@ -23,8 +23,7 @@ const toPromise1 = ( func, gulp, common, arg) => {
       func( gulp, common, arg, resolve, reject )
   } );
 }
-module.exports = async (config) => {
-  common = require('../common/common')(config, 'build')
+module.exports = async (common) => {
   const { buildDistPath, lang } = common.config
   let langFomatData = {}
   try {

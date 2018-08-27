@@ -1,6 +1,7 @@
 const path = require('path')
 const spritesmith = require('gulp.spritesmith')
 let isRem = false
+let templateOption = null
 var templateFunction = function (data) {
   if (data.sprites.length === 0) {
     return ''
@@ -8,7 +9,7 @@ var templateFunction = function (data) {
   let spritesName = data.sprites[0].image.replace(/(.*\/)*([^.]+).*/ig,"$2")
   let spritesheetName = ''
   let spritesheetClass = ''
-  let templateConfig = {
+  let templateConfig = templateOption || {
     spritesheetNameMap: {},
     spriteNameMap: {},
     spritesheetClassMap: {}
@@ -67,6 +68,7 @@ module.exports = (gulp, common, options) => {
   const { projectPath, spritesmith:spritesmithConfign, px2rem } = common.config
   const { algorithm, padding} = spritesmithConfign
   isRem = px2rem.enable
+  templateOption = options.templateConfig
   const spritesDestPath = path.resolve(projectPath, './src/img/')
   gulp.src(options.srcPath)
   .pipe(spritesmith({

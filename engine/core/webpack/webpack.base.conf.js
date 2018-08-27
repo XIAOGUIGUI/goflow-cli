@@ -4,6 +4,7 @@ const path = require('path')
 
 const utils = require('./utils')
 const happyPlugin = require('./happyPlugin')
+const WebpackBar = require('webpackbar');
 const webpackAlias = require('../common/webpack_alias')
 let projectPathString 
 function resolve (dir) {
@@ -19,8 +20,12 @@ module.exports = (config) => {
     limit: 10000,
     name: utils.assetsPath('img/[name].[hash:7].[ext]', config)
   }
-  if (process.env.NODE_ENV !== 'dev') {
+  if (process.env.NODE_ENV !== 'dev' && config.build.imgResourcesDomain && config.build.imgResourcesDomain !== '') {
     imgLoaderOptions.publicPath = config.build.imgResourcesDomain
+  }
+  let publicPath = config.dev.assetsPublicPath
+  if (process.env.NODE_ENV !== 'dev' && config.build.resourcesDomain && config.build.resourcesDomain !== '') {
+    publicPath = config.build.resourcesDomain
   }
   // vueLoader添加happypack
   Object.assign(vueLoaderConfig.config.loaders, {
@@ -34,9 +39,7 @@ module.exports = (config) => {
     output: {
       path: buildDistPath,
       filename: '[name].js',
-      publicPath: process.env.NODE_ENV !== 'dev'
-        ? config.build.assetsPublicPath
-        : config.dev.assetsPublicPath
+      publicPath: publicPath
     },
     resolve: {
       alias: webpackAlias(config),
@@ -99,6 +102,9 @@ module.exports = (config) => {
         }
       ]
     },
-    plugins
+    plugins: [new WebpackBar( {
+      compiledIn: false,
+      name: process.env.NODE_ENV
+    })].concat(plugins)
   }
 }

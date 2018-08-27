@@ -22,7 +22,7 @@ const start = async (config) => {
   const port = parseInt(config.dev.port)
   let freePort = findFreePort({
     start: port,
-    end: port + 10,
+    end: port + 9,
     num: 10,
     ip: localIP
   })

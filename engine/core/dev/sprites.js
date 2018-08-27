@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fs1 = require('fs-extra')
 const path = require('path')
 const del = require('del')
 const chokidar = require('chokidar')
@@ -7,6 +8,11 @@ let spritesWatchObject
 module.exports = (gulp, common, resolve) => {
   const { projectPath } = common.config
   const spritesPath = path.resolve(projectPath, './src/img/slice/')
+  const templateConfigPath = path.resolve(projectPath, './src/img/slice/config.json')
+  let templateConfig = null
+  if(fs.existsSync(templateConfigPath)){
+    templateConfig = fs1.readJsonSync(templateConfigPath)
+  }
   del.sync([path.resolve(projectPath, './src/sass/sprites/')], { force: true })
   spritesWatchObject = {}
   let spritesFiles = fs.readdirSync(spritesPath).filter(function(file){
@@ -17,12 +23,14 @@ module.exports = (gulp, common, resolve) => {
     let filePath = path.resolve(projectPath, `./src/img/slice/${file}/*.png`)
     TaskSpritesmith(gulp, common, {
       name: file,
-      srcPath: filePath
+      srcPath: filePath,
+      templateConfig
     })
     spritesWatchObject[file] = common.plugins.watch(filePath, () => {
       TaskSpritesmith(gulp, common, {
         name: file,
-        srcPath: filePath
+        srcPath: filePath,
+        templateConfig
       })
     })
   })
@@ -38,7 +46,8 @@ module.exports = (gulp, common, resolve) => {
         common.plugins.watch(srcPath, () => {
           TaskSpritesmith(gulp, common, {
             name: fileName,
-            srcPath
+            srcPath,
+            templateConfig
           })
         })
       }

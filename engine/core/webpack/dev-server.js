@@ -2,6 +2,7 @@
 
 const opn = require('opn')
 const path = require('path')
+const chalk = require('chalk')
 const express = require('express')
 const webpack = require('webpack')
 const proxyMiddleware = require('http-proxy-middleware')
@@ -19,21 +20,36 @@ let runner = (config, resolve) => {
 
   const app = express()
   const compiler = webpack(webpackConfig)
-
   const devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
+    logLevel: 'error',
+    historyApiFallback: false,
+    compress: false,
+    noInfo: false,
+    lazy: false,
     quiet: true,
     stats: {
+      assets: false,
+      builtAt: false,
+      cached: false,
       colors: true,
       modules: false,
       children: false,
       chunks: false,
       chunkModules: false,
+      chunkOrigins: false,
+      timings: false,
+      hash: false,
+      entrypoints: false,
+      version: false,
+      warnings: false,
+      errorDetails: false,
     },
     watchOptions: {
       aggregateTimeout: 100,
-      poll: 1000,
-    }
+      poll: 1000
+    },
+    disableHostCheck: true
   })
   const hotMiddleware = require('webpack-hot-middleware')(compiler, {
     log: false

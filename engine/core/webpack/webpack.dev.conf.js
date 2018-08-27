@@ -6,7 +6,6 @@ const utils = require('./utils')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const WebpackBar = require('webpackbar');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 // add hot-reload related code to entry chunks
 
@@ -25,9 +24,6 @@ module.exports = (config) => {
     // cheap-module-eval-source-map is faster for development
     devtool: '#cheap-module-eval-source-map',
     plugins: [
-      new WebpackBar( {
-        name: 'dev'
-      }),
       new webpack.DefinePlugin({
         'process.env': config.dev.env
       }),
@@ -42,7 +38,21 @@ module.exports = (config) => {
         serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname,
           './service-worker-dev.js'), 'utf-8')}</script>`
       }),
-      new FriendlyErrorsPlugin()
+      new FriendlyErrorsPlugin({
+        compilationSuccessInfo: {
+          messages: [`Running: http://${config.dev.ip}:${config.dev.port}`]
+        },
+        onErrors (severity, errors) {
+          console.log()
+          if (errors instanceof Array) {
+            errors.forEach((item, index) => {
+              if (item.file.indexOf('./src/') >= 0) {
+                errors[ index ].file = `./src/${item.file.split('./src/')[1]}`
+              }
+            })
+          }
+        }
+      })
     ]
   })
 }

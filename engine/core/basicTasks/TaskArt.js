@@ -2,7 +2,7 @@
 const path = require('path')
 module.exports = (gulp, common, other,) => {
   const DEV = process.env.NODE_ENV === 'dev'
-  const { projectPath, buildDistPath, publicAssetsPath } = common.config
+  const { projectPath, buildDistPath, publicAssetsPath, mode } = common.config
   const { userArgs } = common.config[process.env.NODE_ENV]
   const srcPath = path.resolve(projectPath, './src/*.html')
   const artCommonPath = path.resolve(projectPath, './src/art_common')
