@@ -1,6 +1,7 @@
 const gulp = require('./core/build/gulp')
 const gulpWebpack = require('./core/build/gulp-webpack')
 module.exports = async config => {
+  let common
   process.env.NODE_ENV = 'build'
   try {
     common = require('./core/common/common')(config, 'build')
@@ -12,5 +13,4 @@ module.exports = async config => {
   } catch (error) {
     common.messager.error(error)
   }
-  
 }

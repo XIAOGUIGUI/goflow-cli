@@ -10,21 +10,27 @@ module.exports = (gulp, common, resolve) => {
   const spritesPath = path.resolve(projectPath, './src/img/slice/')
   const templateConfigPath = path.resolve(projectPath, './src/img/slice/config.json')
   let templateConfig = null
-  if(fs.existsSync(templateConfigPath)){
+  if (fs.existsSync(templateConfigPath)) {
     templateConfig = fs1.readJsonSync(templateConfigPath)
   }
   del.sync([path.resolve(projectPath, './src/sass/sprites/')], { force: true })
   spritesWatchObject = {}
-  let spritesFiles = fs.readdirSync(spritesPath).filter(function(file){
+  let spritesFiles = fs.readdirSync(spritesPath).filter(function (file) {
     let filePath = path.join(spritesPath, file)
     return fs.statSync(filePath).isDirectory()
   })
+  let num = 1
   spritesFiles.forEach(file => {
     let filePath = path.resolve(projectPath, `./src/img/slice/${file}/*.png`)
     TaskSpritesmith(gulp, common, {
       name: file,
       srcPath: filePath,
       templateConfig
+    }, function () {
+      num++
+      if (num === spritesFiles.length) {
+        resolve && resolve()
+      }
     })
     spritesWatchObject[file] = common.plugins.watch(filePath, () => {
       TaskSpritesmith(gulp, common, {
@@ -34,7 +40,6 @@ module.exports = (gulp, common, resolve) => {
       })
     })
   })
-  resolve && resolve()
   // 监听
   let ready = false
   chokidar.watch(spritesPath).on('addDir', filePath => {
@@ -58,7 +63,10 @@ module.exports = (gulp, common, resolve) => {
       fileName = fileName.substring(1)
       if (fileName.indexOf(path.sep) < 0) {
         let pngPath = path.resolve(projectPath, `./src/img/${fileName}.png`)
-        let sassPath = path.resolve(projectPath, `./src/sass/sprite/${fileName}.scss`)
+        let sassPath = path.resolve(
+          projectPath,
+          `./src/sass/sprite/${fileName}.scss`
+        )
         del.sync([pngPath, sassPath], { force: true })
         spritesWatchObject[fileName] && spritesWatchObject[fileName].close()
       }

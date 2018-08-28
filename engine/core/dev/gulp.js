@@ -10,14 +10,19 @@ const TaskCopy = require('../basicTasks/TaskCopy')
 const TaskBabel = require('../basicTasks/TaskBabel')
 const TaskLintJs = require('../lint/TaskJs')
 const TaskSass = require('../basicTasks/TaskSass')
+const TaskLintCss = require('../lint/TaskCss')
 const SPRITES = require('./sprites')
 const SERVER = require('./browserSync')
 
+const toPromise = (func, gulp, common) => {
+  return new Promise((resolve, reject) => {
+    func(gulp, common, resolve, reject)
+  })
+}
 module.exports = async (common) => {
-  
   const { projectPath, buildDistPath } = common.config
   del.sync([buildDistPath], { force: true })
-  SPRITES(gulp, common)
+  await toPromise(SPRITES, gulp, common)
   TaskCopy(gulp, common, {
     directory: './static',
     base: true
@@ -54,8 +59,10 @@ module.exports = async (common) => {
     TaskLintJs(gulp, common)
     TaskBabel(gulp, common)
   })
+  await TaskLintCss(gulp, common)
   await TaskSass(gulp, common)
   common.plugins.watch(path.resolve(projectPath, './src/sass/**/*.scss'), () => {
+    TaskLintCss(gulp, common)
     TaskSass(gulp, common)
   })
   TaskArt(gulp, common)
