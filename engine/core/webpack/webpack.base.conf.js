@@ -4,9 +4,10 @@ const path = require('path')
 
 const utils = require('./utils')
 const happyPlugin = require('./happyPlugin')
-const WebpackBar = require('webpackbar');
+const WebpackBar = require('webpackbar')
+const StyleLintPlugin = require('stylelint-webpack-plugin')
 const webpackAlias = require('../common/webpack_alias')
-let projectPathString 
+let projectPathString
 function resolve (dir) {
   return path.join(projectPathString, dir)
 }
@@ -44,24 +45,24 @@ module.exports = (config) => {
     resolve: {
       alias: webpackAlias(config),
       modules: [
-        path.resolve( root, './node_modules' ),
-        path.resolve( projectPath, './node_modules' )
+        path.resolve(root, './node_modules'),
+        path.resolve(projectPath, './node_modules')
       ],
-      extensions: ['.js', '.vue', '.json'],
-      
+      extensions: ['.js', '.vue', '.json']
+
     },
     module: {
       rules: [
-        {
-          test: /\.(js|vue)$/,
-          loader: require.resolve('eslint-loader'),
-          enforce: 'pre',
-          include: [resolve('src'), resolve('test')],
-          options: {
-            emitWarning: true,
-            formatter: require('eslint-friendly-formatter')
-          }
-        },
+        // {
+        //   test: /\.(js|vue)$/,
+        //   loader: require.resolve('eslint-loader'),
+        //   enforce: 'pre',
+        //   include: [resolve('src'), resolve('test')],
+        //   options: {
+        //     emitWarning: true,
+        //     formatter: require('eslint-friendly-formatter')
+        //   }
+        // },
         {
           test: /\.vue$/,
           loader: require.resolve('vue-loader'),
@@ -102,9 +103,13 @@ module.exports = (config) => {
         }
       ]
     },
-    plugins: [new WebpackBar( {
+    plugins: [new WebpackBar({
       compiledIn: false,
       name: process.env.NODE_ENV
+    }), new StyleLintPlugin({
+      configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
+      // 正则匹配想要lint监测的文件
+      files: ['src/sass/*.s?(a|c)ss']
     })].concat(plugins)
   }
 }

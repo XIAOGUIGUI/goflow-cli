@@ -19,7 +19,7 @@ var templateFunction = function (data) {
   } else {
     spritesheetName = `.icon-${spritesName}`
   }
-  let shared = 'N {\n  display: inline-block;\n  background-image: url(I);\n  background-repeat: no-repeat;\n  background-size: Wpx, Hpx;\n}\n'
+  let shared = 'N {\n  display: inline-block;\n\n  background-image: url("I");\n  background-repeat: no-repeat;\n  background-size: Wpx, Hpx;\n}\n'
     .replace('N', spritesheetName)
     .replace('I', data.sprites[0].image)
     .replace('W', data.spritesheet.width)
@@ -48,7 +48,7 @@ var templateFunction = function (data) {
     } else {
       y = sprite.offset_y
     }
-    return 'N {\n  width: Wpx;\n  height: Hpx;\n  background-position: X Y;\n}'
+    return 'N {\n  width: Wpx;\n  height: Hpx;\n\n  background-position: X Y;\n}'
       .replace('N', name)
       .replace('W', sprite.width + 1)
       .replace('H', sprite.height + 1)

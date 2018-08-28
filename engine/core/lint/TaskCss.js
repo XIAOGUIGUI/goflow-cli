@@ -1,5 +1,4 @@
 const path = require('path')
-const escape = require('lodash/escape')
 let messager = null
 let styleErrorResult = []
 // 输出代码格式错误信息
@@ -8,7 +7,7 @@ const styleErrorNotifier = function () {
   styleErrorResult.forEach(function (result) {
     messager.error(`Sass 样式检查错误: ${result.fileName}文件`)
     result.warnings.forEach(function (warning) {
-      messager.error(`line ${warning.line}, col ${warning.column}: ${escape(warning.text)}`)
+      messager.error(`line ${warning.line}, col ${warning.column}: ${warning.text}`)
     })
   })
 }
@@ -40,6 +39,7 @@ module.exports = (gulp, common, resolve) => {
   messager = common.messager
   gulp.src(sassPath)
     .pipe(common.plugins.stylelint({
+      configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
       reporters: [{
         formatter: styleErrorFormatter
       }]

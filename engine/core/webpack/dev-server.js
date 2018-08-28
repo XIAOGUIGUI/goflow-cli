@@ -2,13 +2,11 @@
 
 const opn = require('opn')
 const path = require('path')
-const chalk = require('chalk')
 const express = require('express')
 const webpack = require('webpack')
 const proxyMiddleware = require('http-proxy-middleware')
 let server
 let runner = (config, resolve) => {
-
   const webpackConfig = require('./webpack.dev.conf')(config)
   // default port where dev server listens for incoming traffic
   const port = config.dev.port
@@ -43,7 +41,7 @@ let runner = (config, resolve) => {
       entrypoints: false,
       version: false,
       warnings: false,
-      errorDetails: false,
+      errorDetails: false
     },
     watchOptions: {
       aggregateTimeout: 100,

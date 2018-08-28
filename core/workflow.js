@@ -20,15 +20,15 @@ module.exports = async (flag = 'build', env = '', cmd = {}) => {
   // 重写messager方法
   Messager.sender = ({ type, msg }) => {
     if (type === 'success') {
-      let msg = ''
+      let printMsg = ''
       if (flag === 'build') {
-        msg = 'build finish'
+        printMsg = 'build finish'
       } else if (workflowConfig.mode === 'webpack') {
-        msg = `http://${msg.ip}:${msg.bsPort}`
+        printMsg = `http://${msg.ip}:${msg.bsPort}`
       } else {
-        msg = `started dev service`
+        printMsg = `started dev service`
       }
-      print.success(msg)
+      print.success(printMsg)
     } else {
       sender({ type, msg })
     }

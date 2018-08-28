@@ -17,29 +17,29 @@ module.exports = (gulp, common, other, resolve) => {
   let fileName = ''
   let assetsPath = publicAssetsPath
   let langHtmlNameList = []
-  if (publicAssetsPath.indexOf('/') === 0 ) {
-    assetsPath = publicAssetsPath.replace("/","../")
-  } else if (publicAssetsPath.indexOf('./') === 0){
-    assetsPath = publicAssetsPath.replace("./", "../")
+  if (publicAssetsPath.indexOf('/') === 0) {
+    assetsPath = publicAssetsPath.replace('/', '../')
+  } else if (publicAssetsPath.indexOf('./') === 0) {
+    assetsPath = publicAssetsPath.replace('./', '../')
   }
   gulp.src(artPath)
     .pipe(common.plugins.rename(function (Filepath) {
-      fileName = Filepath.basename;
+      fileName = Filepath.basename
       langHtmlNameList.push(fileName)
       if (!DEV) {
-        Filepath.dirname += '/' + Filepath.basename;
-        Filepath.basename = lang;
-        Filepath.extname = '.html';
-      } 
+        Filepath.dirname += '/' + Filepath.basename
+        Filepath.basename = lang
+        Filepath.extname = '.html'
+      }
     }))
     .pipe(common.plugins.if(hasChange, common.plugins.changed(buildDistPath)))
     .pipe(common.plugins.htmlArt({
       paths: [artCommonPath],
-      formatData: function(data) {
+      formatData: function (data) {
         try {
           data = require(`${projectPath}/src/lang/${fileName}/${lang}.js`)
         } catch (error) {
-          throw({
+          throw ({
             fileName: fileName,
             message: `${lang}多语言js文件未找到`
           })
@@ -48,19 +48,19 @@ module.exports = (gulp, common, other, resolve) => {
         data.userArgs = userArgs
         data.DEBUG = DEV
         return data
-      },
+      }
     })).on('error', e => {
       let fileName = e.fileName || path.basename(e.file)
-      common.messager.notice( 'ART 编译错误 >> ' )
-      common.messager.error( `ART 编译错误: ${ fileName }文件`)
+      common.messager.notice('ART 编译错误 >> ')
+      common.messager.error(`ART 编译错误: ${fileName}文件`)
       if (e.type === 'TemplateError') {
-        common.messager.error( `line ${ e.line }, col ${ e.column }: ${ e.message }` )
+        common.messager.error(`line ${e.line}, col ${e.column}: ${e.message}`)
       } else {
-        common.messager.error( `错误原因: ${  e.message }`)
+        common.messager.error(`错误原因: ${e.message}`)
       }
     })
     .pipe(gulp.dest(buildDistPath))
-    .on('end', ( ) => {
+    .on('end', () => {
       resolve && resolve(langHtmlNameList)
     })
     .pipe(common.reload({stream: true}))

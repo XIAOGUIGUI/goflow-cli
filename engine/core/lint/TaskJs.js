@@ -27,9 +27,7 @@ module.exports = (gulp, common, resolve) => {
       extension: '.js'
     })))
     .pipe(eslint({
-      configFile:
-        eslintConfig ||
-        path.resolve(__dirname, '../common/default_js_eslint.js')
+      configFile: eslintConfig
     }))
     .pipe(eslint.results(results => {
       if (results.errorCount > 0) {

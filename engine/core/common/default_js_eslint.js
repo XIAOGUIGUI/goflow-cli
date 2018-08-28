@@ -1,4 +1,3 @@
-
 'use strict'
 
 module.exports = {
@@ -8,21 +7,19 @@ module.exports = {
     sourceType: 'module'
   },
   env: {
-    browser: true,
+    browser: true
   },
   extends: 'standard',
-  plugins: [
-    'html'
-  ],
+  plugins: ['html'],
   globals: {
-    "$": true
+    $: true
   },
   // add your custom rules here
-  'rules': {
+  rules: {
     'arrow-parens': 0,
     // allow async-await
     'generator-star-spacing': 0,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'build' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV !== 'dev' ? 2 : 0
   }
 }
