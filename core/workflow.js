@@ -12,14 +12,23 @@ module.exports = async (flag = 'build', env = '', cmd = {}) => {
   if (env !== '') {
     workflowConfig[flag].env = env
   }
-  console.log( `ℹ ｢wdm｣: launching ${ chalk.bold( flag ) }${ env !== '' ? `, env: ${ chalk.bold.underline(env) }` : '' }` );
+  console.log(`ℹ ｢wdm｣: launching ${chalk.bold(flag)}${env !== '' ? `, env: ${chalk.bold.underline(env)}` : ''}`
+  )
   const Messager = require('../engine/messager')
 
   const { sender } = Messager
   // 重写messager方法
   Messager.sender = ({ type, msg }) => {
-    if ( type === 'success' ) {
-      print.success( flag === 'dev' ? (workflowConfig.mode === 'webpack' ? `http://${ msg.ip }:${ msg.bsPort }` : 'started dev service') : 'build finish' );
+    if (type === 'success') {
+      let printMsg = ''
+      if (flag === 'build') {
+        printMsg = 'build finish'
+      } else if (workflowConfig.mode === 'webpack') {
+        printMsg = `http://${msg.ip}:${msg.bsPort}`
+      } else {
+        printMsg = `started dev service`
+      }
+      print.success(printMsg)
     } else {
       sender({ type, msg })
     }
@@ -27,5 +36,5 @@ module.exports = async (flag = 'build', env = '', cmd = {}) => {
       process.exit(1)
     }
   }
-  require(`../engine/${ flag }`)(workflowConfig)
+  require(`../engine/${flag}`)(workflowConfig)
 }

@@ -42,8 +42,8 @@ if (!fs.existsSync(globalConfigPath)) {
 }
 
 exports.set = (name, value) => {
-  value == 'true' && (value = true)
-  value == 'false' && (value = false)
+  value === 'true' && (value = true)
+  value === 'false' && (value = false)
 
   config[name] = value
 

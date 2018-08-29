@@ -5,9 +5,7 @@ const prompt = require('inquirer').prompt
 const goflowProject = require('../project')
 const getConfig = require('./local_config').get
 
-const {
-  version: c_version
-} = require('../package.json')
+const { version: cVersion } = require('../package.json')
 
 module.exports = async function () {
   let projectTypes = {}
@@ -24,7 +22,7 @@ module.exports = async function () {
   const types = Object.keys(projectTypes)
   let spaceLenght = 0
   const getToSpaceLenght = () => {
-    types.forEach((item) => {
+    types.forEach(item => {
       if (item.length > spaceLenght) {
         spaceLenght = item.length
       }
@@ -33,21 +31,22 @@ module.exports = async function () {
   getToSpaceLenght()
   spaceLenght = spaceLenght + 2
   const toSpace = str => {
-    return str + Array(spaceLenght > str.length ? spaceLenght - str.length + 1 || 0 : 0).join(' ')
+    return (str + Array(spaceLenght > str.length ? spaceLenght - str.length + 1 || 0 : 0).join(' '))
   }
   types.forEach((item, index) => {
     let description = `- ${projectTypes[item].description}`
     types[index] = {
-      name: `${chalk.bold(toSpace(item))}${ chalk.whiteBright(description)}`,
+      name: `${chalk.bold(toSpace(item))}${chalk.whiteBright(description)}`,
       value: item
     }
   })
-  let questions = [{
+  let questions = [
+    {
       type: 'input',
       name: 'name',
       message: '项目名称',
       default: '',
-      validate(input) {
+      validate (input) {
         const done = this.async()
         !input ? done('项目名称不能为空') : done(null, true)
       }
@@ -75,23 +74,22 @@ module.exports = async function () {
       type: 'list',
       name: 'isSourcePath',
       message: '是否作为源路径',
-      choices: [{
-        name: 'no',
-        value: false
-      }, {
-        name: 'yes',
-        value: true
-      }],
+      choices: [
+        {
+          name: 'no',
+          value: false
+        },
+        {
+          name: 'yes',
+          value: true
+        }
+      ],
       default: 0
     }
   ]
-  const {
-    name,
-    type,
-    version,
-    description,
-    isSourcePath
-  } = await prompt(questions);
+  const { name, type, version, description, isSourcePath } = await prompt(
+    questions
+  )
 
   const options = {
     path: process.cwd(),
@@ -99,16 +97,18 @@ module.exports = async function () {
     name,
     version,
     isSourcePath,
-    author: getConfig( 'user' ),
-    c_version: `cli@${ c_version }`,
+    author: getConfig('user'),
+    cVersion: `cli@${cVersion}`,
     description,
     typeSourcePath: projectTypes[type].path,
     typeTpl: projectTypes[type].type,
-    from: 'cli',
+    from: 'cli'
   }
   const result = await goflowProject.new(options)
 
-  result && result.newProjectSuccessMessage && console.log(result.newProjectSuccessMessage)
+  result &&
+    result.newProjectSuccessMessage &&
+    console.log(result.newProjectSuccessMessage)
 
   typeof result !== 'string' ? print.success('新建成功') : print.error(result)
 }

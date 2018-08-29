@@ -1,5 +1,7 @@
 module.exports = {
-  px2rem: {  // px转rem配置
+  mode: 'gulp',
+  px2rem: {
+    // px转rem配置
     enable: false, // 是否开启
     root_value: 75,
     unit_precision: 5,
@@ -15,12 +17,7 @@ module.exports = {
   lang: {
     defulteLang: 'en'
   },
-  browserslist: [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8",
-    "Android >= 4"
-  ],
+  browserslist: ['> 1%', 'last 2 versions', 'not ie <= 8', 'Android >= 4'],
   build: {
     env: 'production',
     assetsSubDirectory: 'static',

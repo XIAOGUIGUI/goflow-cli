@@ -8,15 +8,21 @@ const TaskArtLang = require('../basicTasks/TaskArtLang')
 
 const TaskCopy = require('../basicTasks/TaskCopy')
 const TaskBabel = require('../basicTasks/TaskBabel')
+const TaskLintJs = require('../lint/TaskJs')
 const TaskSass = require('../basicTasks/TaskSass')
+const TaskLintCss = require('../lint/TaskCss')
 const SPRITES = require('./sprites')
 const SERVER = require('./browserSync')
 
-module.exports = async (config) => {
-  common = require('../common/common')(config, 'dev')
+const toPromise = (func, gulp, common) => {
+  return new Promise((resolve, reject) => {
+    func(gulp, common, resolve, reject)
+  })
+}
+module.exports = async (common) => {
   const { projectPath, buildDistPath } = common.config
   del.sync([buildDistPath], { force: true })
-  SPRITES(gulp, common)
+  await toPromise(SPRITES, gulp, common)
   TaskCopy(gulp, common, {
     directory: './static',
     base: true
@@ -47,12 +53,16 @@ module.exports = async (config) => {
       distDirectory: 'font'
     })
   })
+  TaskLintJs(gulp, common)
   TaskBabel(gulp, common)
   common.plugins.watch(path.resolve(projectPath, './src/js/**/*.js'), () => {
+    TaskLintJs(gulp, common)
     TaskBabel(gulp, common)
   })
+  await TaskLintCss(gulp, common)
   await TaskSass(gulp, common)
   common.plugins.watch(path.resolve(projectPath, './src/sass/**/*.scss'), () => {
+    TaskLintCss(gulp, common)
     TaskSass(gulp, common)
   })
   TaskArt(gulp, common)
@@ -67,11 +77,5 @@ module.exports = async (config) => {
     TaskArt(gulp, common, false)
     TaskArtLang(gulp, common, false)
   })
-
   await SERVER(common.config)
-  // 入口文件增加或删除提示重启加入webpack构建中
-  common.plugins.watch(path.resolve(projectPath, './app-config.js'), () => {
-    common.messager.notice( '项目配置修改后, 重启工作流后生效' )
-  })
-  common.messager.success()
 }
