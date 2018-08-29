@@ -20,12 +20,12 @@ let runner = (config, resolve) => {
   const compiler = webpack(webpackConfig)
   const devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
+    quiet: true,
     logLevel: 'error',
     historyApiFallback: false,
     compress: false,
     noInfo: false,
     lazy: false,
-    quiet: true,
     stats: {
       assets: false,
       builtAt: false,

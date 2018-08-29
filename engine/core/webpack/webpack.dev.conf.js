@@ -9,11 +9,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 // add hot-reload related code to entry chunks
 
-
 module.exports = (config) => {
   const { projectPath } = config
   const baseWebpackConfig = require('./webpack.base.conf')(config)
-  const devClientPath = path.resolve( __dirname, './dev-client.js' );
+  const devClientPath = path.resolve(__dirname, './dev-client.js')
   Object.keys(baseWebpackConfig.entry).forEach(function (name) {
     baseWebpackConfig.entry[name] = [devClientPath].concat(baseWebpackConfig.entry[name])
   })
@@ -43,10 +42,9 @@ module.exports = (config) => {
           messages: [`Running: http://${config.dev.ip}:${config.dev.port}`]
         },
         onErrors (severity, errors) {
-          console.log()
           if (errors instanceof Array) {
             errors.forEach((item, index) => {
-              if (item.file.indexOf('./src/') >= 0) {
+              if (item.file && item.file.indexOf('./src/') >= 0) {
                 errors[ index ].file = `./src/${item.file.split('./src/')[1]}`
               }
             })

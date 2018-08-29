@@ -1,23 +1,26 @@
-
 'use strict'
 
 module.exports = {
   cacheDirectory: true,
   presets: [
     [
-      require.resolve('babel-preset-env'),{
-        "modules": false,
-        targets: { 
-          'browsers': [ 'android >= 4', '> 1%', 'last 2 versions', 'not ie <= 8']
+      require.resolve('babel-preset-env'), {
+        modules: false,
+        targets: {
+          browsers: ['android >= 4', '> 1%', 'last 2 versions', 'not ie <= 8']
         }
       }
-    ],require.resolve('babel-preset-stage-2')
+    ],
+    require.resolve('babel-preset-stage-2')
   ],
   plugins: [require.resolve('babel-plugin-transform-runtime')],
   env: {
     test: {
-      presets: [require.resolve('babel-preset-env'), require.resolve('babel-preset-stage-2')],
-      plugins: [require.resolve("babel-plugin-istanbul")]
+      presets: [
+        require.resolve('babel-preset-env'),
+        require.resolve('babel-preset-stage-2')
+      ],
+      plugins: [require.resolve('babel-plugin-istanbul')]
     }
   }
 }

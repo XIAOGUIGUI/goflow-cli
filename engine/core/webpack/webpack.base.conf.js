@@ -53,16 +53,17 @@ module.exports = (config) => {
     },
     module: {
       rules: [
-        // {
-        //   test: /\.(js|vue)$/,
-        //   loader: require.resolve('eslint-loader'),
-        //   enforce: 'pre',
-        //   include: [resolve('src'), resolve('test')],
-        //   options: {
-        //     emitWarning: true,
-        //     formatter: require('eslint-friendly-formatter')
-        //   }
-        // },
+        {
+          test: /Preheat\.(js|vue)$/,
+          loader: require.resolve('eslint-loader'),
+          enforce: 'pre',
+          include: [resolve('src'), resolve('test')],
+          options: {
+            configFile: path.resolve(__dirname, '../common/default_js_eslint.js'),
+            emitWarning: true,
+            formatter: require('eslint-friendly-formatter')
+          }
+        },
         {
           test: /\.vue$/,
           loader: require.resolve('vue-loader'),
@@ -103,13 +104,15 @@ module.exports = (config) => {
         }
       ]
     },
-    plugins: [new WebpackBar({
-      compiledIn: false,
-      name: process.env.NODE_ENV
-    }), new StyleLintPlugin({
-      configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
-      // 正则匹配想要lint监测的文件
-      files: ['src/sass/*.s?(a|c)ss']
-    })].concat(plugins)
+    plugins: [
+      new WebpackBar({
+        compiledIn: false,
+        name: process.env.NODE_ENV
+      })
+      // new StyleLintPlugin({
+      //   configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
+      //   files: ['src/**/*.vue', 'src/sass/*.s?(a|c)ss']
+      // })
+    ].concat(plugins)
   }
 }

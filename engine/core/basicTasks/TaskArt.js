@@ -1,6 +1,6 @@
 // 处理art-template页面
 const path = require('path')
-module.exports = (gulp, common, other,) => {
+module.exports = (gulp, common, other) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { projectPath, buildDistPath, publicAssetsPath, mode } = common.config
   const { userArgs } = common.config[process.env.NODE_ENV]
@@ -18,7 +18,8 @@ module.exports = (gulp, common, other,) => {
     userArgs,
     DEBUG: DEV
   }
-  gulp.src(srcPath)
+  gulp
+    .src(srcPath)
     .pipe(common.plugins.if(hasChange, common.plugins.changed(buildDistPath)))
     .pipe(common.plugins.htmlArt({
       paths: [artCommonPath],
@@ -26,20 +27,20 @@ module.exports = (gulp, common, other,) => {
     }))
     .on('error', e => {
       let fileName = path.basename(e.file)
-      common.messager.notice( 'ART 编译错误 >> ' )
-      common.messager.error( `ART 编译错误: ${ fileName }文件`)
+      common.messager.notice('ART 编译错误 >> ')
+      common.messager.error(`ART 编译错误: ${fileName}文件`)
       if (e.type === 'TemplateError') {
-        common.messager.error( `line ${ e.line }, col ${ e.column }: ${ e.message }` )
+        common.messager.error(`line ${e.line}, col ${e.column}: ${e.message}`)
       } else {
-        common.messager.error( `错误原因: ${  e.message }`)
+        common.messager.error(`错误原因: ${e.message}`)
       }
     })
     .pipe(gulp.dest(buildDistPath))
-    .on('end', ( ) => {
+    .on('end', () => {
       if (DEV === false) {
-        common.messager.log( 'ART 编译完成' )
+        common.messager.log('ART 编译完成')
       }
       callBack && callBack()
     })
-    .pipe(common.plugins.if(DEV, common.reload({ stream: true } )))
+    .pipe(common.plugins.if(DEV, common.reload({ stream: true })))
 }

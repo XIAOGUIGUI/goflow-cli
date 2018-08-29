@@ -15,7 +15,8 @@ var templateFunction = function (data) {
     spritesheetClassMap: {}
   }
   if (templateConfig && templateConfig.spritesheetNameMap[spritesName]) {
-    spritesheetName = templateConfig.spritesheetNameMap[spritesName]
+    let name = templateConfig.spritesheetNameMap[spritesName]
+    spritesheetName = name.replace(/,\s*./g, ',\n.')
   } else {
     spritesheetName = `.icon-${spritesName}`
   }

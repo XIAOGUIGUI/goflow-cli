@@ -9,8 +9,8 @@ module.exports = {
   env: {
     browser: true
   },
-  extends: 'standard',
-  plugins: ['html'],
+  extends: ['plugin:vue/base', 'standard'],
+  plugins: ['vue', 'html'],
   globals: {
     $: true
   },
