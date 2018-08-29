@@ -1,0 +1,36 @@
+{
+  "name": "goflow-project",
+  "version": "0.0.1",
+  "description": "goflow project",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goflow/project.git"
+  },
+  "author": "lijialiang@yy.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/goflow/project/issues"
+  },
+  "homepage": "https://github.com/goflow/project#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "chalk": "^2.4.1",
+    "format-yaml": "^0.0.1",
+    "fs-extra": "~5.0.0",
+    "glob": "~7.1.2",
+    "globby": "^8.0.1",
+    "legoflow-config": "0.0.7",
+    "shelljs": "^0.8.2",
+    "yamljs": "^0.3.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "project": {
+    "Vue.js": "Vue.js 项目基础模板",
+    "glive-staitc": "glive客户端静态页面项目基础模板"
+  }
+}
