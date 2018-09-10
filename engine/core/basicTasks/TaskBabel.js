@@ -1,5 +1,5 @@
 const path = require('path')
-module.exports = (gulp, common, resolve) =>  {
+module.exports = (gulp, common, resolve) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { root, projectPath, assetsPath } = common.config
   const {userArgs, env} = common.config[process.env.NODE_ENV]
@@ -25,17 +25,17 @@ module.exports = (gulp, common, resolve) =>  {
     .pipe(common.plugins.babel({
       presets: [es2015Path]
     }))
-    .on('error', function(e){
+    .on('error', function (e) {
       this.emit('end')
     })
     .pipe(common.plugins.if(!DEV, common.plugins.uglify(uglifyOption)))
     .pipe(gulp.dest(distPath))
-    .on('end', ( ) => {
+    .on('end', () => {
       if (DEV === false) {
-        common.messager.log( 'JS 构建完成' )
+        common.messager.log('JS 构建完成')
         resolve()
       }
       resolve && resolve()
     })
-    .pipe(common.plugins.if(DEV, common.reload({ stream: true } )))
+    .pipe(common.plugins.if(DEV, common.reload({ stream: true })))
 }

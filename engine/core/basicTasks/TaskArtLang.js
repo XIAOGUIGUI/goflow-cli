@@ -3,7 +3,7 @@ const path = require('path')
 module.exports = (gulp, common, other, resolve) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { projectPath, buildDistPath, publicAssetsPath } = common.config
-  const { userArgs } = common.config[process.env.NODE_ENV]
+  const { userArgs, env } = common.config[process.env.NODE_ENV]
   const defulteLang = common.config.lang && common.config.lang.defulteLang ? common.config.lang.defulteLang : 'en'
   const artPath = path.resolve(projectPath, './src/art_lang/*.html')
   const artCommonPath = path.resolve(projectPath, './src/art_common')
@@ -39,12 +39,13 @@ module.exports = (gulp, common, other, resolve) => {
         try {
           data = require(`${projectPath}/src/lang/${fileName}/${lang}.js`)
         } catch (error) {
-          throw ({
+          throw (new Error({
             fileName: fileName,
             message: `${lang}多语言js文件未找到`
-          })
+          }))
         }
         data.publicAssetsPath = assetsPath
+        data.NODE_ENV = env
         data.userArgs = userArgs
         data.DEBUG = DEV
         return data
