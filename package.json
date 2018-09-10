@@ -1,6 +1,6 @@
 {
   "name": "goflow-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "goflow cli",
   "main": "index.js",
   "bin": {

@@ -1,17 +1,30 @@
 const path = require('path')
 let messager = null
 let jsErrorResults
-const jsErrorNotifier = function (results) {
+const jsErrorNotifier = function () {
   messager.notice('JS 代码检查错误 >> ')
-  for (let index = 0; index < results.length; index++) {
-    if (results[index].errorCount > 0) {
-      let fileName = results[index].filePath && results[index].filePath.split('src')[1]
+  for (let index = 0; index < jsErrorResults.length; index++) {
+    if (jsErrorResults[index].errorCount > 0) {
+      let fileName = jsErrorResults[index].filePath && jsErrorResults[index].filePath.split('src')[1]
       messager.notice(`JS 代码检查错误: ${fileName}文件`)
-      for (let j = 0; j < results[index].messages.length; j++) {
-        let message = results[index].messages[j]
+      for (let j = 0; j < jsErrorResults[index].messages.length; j++) {
+        let message = jsErrorResults[index].messages[j]
         messager.error(`line ${message.line}, col ${message.column}: ${message.message}`)
       }
     }
+  }
+}
+// 格式化样式检查数据
+const jsErrorFormatter = function (jsLintResults) {
+  jsErrorResults = []
+  jsLintResults.forEach(function (result) {
+    if (result.messages.length === 0) {
+      return false
+    }
+    jsErrorResults.push(result)
+  })
+  if (jsErrorResults.length > 0) {
+    jsErrorNotifier()
   }
 }
 module.exports = (gulp, common, resolve) => {
@@ -30,10 +43,7 @@ module.exports = (gulp, common, resolve) => {
     .pipe(eslint({
       configFile: eslintConfig,
       results: (data) => {
-        jsErrorResults = data
-        if (data.length > 0) {
-          jsErrorNotifier(data)
-        }
+        jsErrorFormatter(data)
       }
     }))
     .on('end', () => {

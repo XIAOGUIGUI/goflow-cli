@@ -23,6 +23,9 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: './'
   },
+  testing: {
+    env: 'testing'
+  },
   dev: {
     env: 'development',
     port: 8080,
