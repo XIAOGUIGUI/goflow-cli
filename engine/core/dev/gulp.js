@@ -40,7 +40,8 @@ module.exports = async (common) => {
   common.plugins.watch(path.resolve(projectPath, './src/img'), () => {
     TaskCopy(gulp, common, {
       directory: './src/img',
-      distDirectory: 'img'
+      distDirectory: 'img',
+      ignoreDirectory: 'slice'
     })
   })
   TaskCopy(gulp, common, {

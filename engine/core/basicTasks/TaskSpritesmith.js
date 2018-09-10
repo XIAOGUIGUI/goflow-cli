@@ -1,4 +1,5 @@
 const path = require('path')
+const _ = require('lodash')
 const spritesmith = require('gulp.spritesmith')
 let isRem = false
 let templateOption = null
@@ -9,10 +10,19 @@ var templateFunction = function (data) {
   let spritesName = data.sprites[0].image.replace(/(.*\/)*([^.]+).*/ig, '$2')
   let spritesheetName = ''
   let spritesheetClass = ''
-  let templateConfig = templateOption || {
+  let shareSpace = '  '
+  let startSpace = ''
+  let closeSpace = ''
+  let templateConfig = _.defaultsDeep(templateOption, {
     spritesheetNameMap: {},
     spriteNameMap: {},
     spritesheetClassMap: {}
+  })
+  if (templateConfig && templateConfig.spritesheetClassMap[spritesName]) {
+    spritesheetClass = templateConfig.spritesheetClassMap[spritesName]
+    shareSpace = '    '
+    startSpace = '  '
+    closeSpace = '  '
   }
   if (templateConfig && templateConfig.spritesheetNameMap[spritesName]) {
     let name = templateConfig.spritesheetNameMap[spritesName]
@@ -20,11 +30,14 @@ var templateFunction = function (data) {
   } else {
     spritesheetName = `.icon-${spritesName}`
   }
-  let shared = 'N {\n  display: inline-block;\n\n  background-image: url("I");\n  background-repeat: no-repeat;\n  background-size: Wpx, Hpx;\n}\n'
+  let shared = '{start}N {\n\tdisplay: inline-block;\n\n\tbackground-image: url("I");\n\tbackground-repeat: no-repeat;\n\tbackground-size: Wpx, Hpx;\n{close}}\n'
+    .replace('{start}', startSpace)
+    .replace('{close}', closeSpace)
     .replace('N', spritesheetName)
     .replace('I', data.sprites[0].image)
     .replace('W', data.spritesheet.width)
     .replace('H', data.spritesheet.height)
+    .replace(/\t/g, shareSpace)
   let spriteNameMap = templateConfig && templateConfig.spriteNameMap[spritesName] ? templateConfig.spriteNameMap[spritesName] : {}
   let perSprite = data.sprites.map(function (sprite) {
     let name = sprite.name
@@ -49,18 +62,18 @@ var templateFunction = function (data) {
     } else {
       y = sprite.offset_y
     }
-    return 'N {\n  width: Wpx;\n  height: Hpx;\n\n  background-position: X Y;\n}'
+    return '{start}N {\n\twidth: Wpx;\n\theight: Hpx;\n\n\tbackground-position: X Y;\n{close}}'
+      .replace('{start}', startSpace)
+      .replace('{close}', closeSpace)
       .replace('N', name)
       .replace('W', sprite.width + 1)
       .replace('H', sprite.height + 1)
       .replace('X', x)
       .replace('Y', y)
+      .replace(/\t/g, shareSpace)
   }).join('\n\n')
-  if (templateConfig && templateConfig.spritesheetClassMap[spritesName]) {
-    spritesheetClass = templateConfig.spritesheetClassMap[spritesName]
-    shared.replace('  ', '    ')
-    perSprite.replace('  ', '    ')
-    return spritesheetClass + '{\n  ' + shared + '\n' + perSprite + '\n}\n'
+  if (spritesheetClass !== '') {
+    return spritesheetClass + ' {\n' + shared + '\n' + perSprite + '\n}\n'
   } else {
     return shared + '\n' + perSprite + '\n'
   }

@@ -5,7 +5,7 @@ let styleErrorResult = []
 const styleErrorNotifier = function () {
   messager.notice('Sass 样式检查错误 >> ')
   styleErrorResult.forEach(function (result) {
-    messager.error(`Sass 样式检查错误: ${result.fileName}文件`)
+    messager.notice(`Sass 样式检查错误: ${result.fileName}文件`)
     result.warnings.forEach(function (warning) {
       messager.error(`line ${warning.line}, col ${warning.column}: ${warning.text}`)
     })
@@ -44,6 +44,11 @@ module.exports = (gulp, common, resolve) => {
         formatter: styleErrorFormatter
       }]
     }))
+    .on('error', function (e) {
+      if (DEV === true) {
+        resolve && resolve()
+      }
+    })
     .on('end', () => {
       if ((DEV === false && styleErrorResult.length === 0) || process.env.NODE_ENV === 'lint') {
         messager.log('css 代码风格检查完成')
