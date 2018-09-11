@@ -2,12 +2,12 @@
 
 const path = require('path')
 let localConfig
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 exports.assetsPath = function (_path, config) {
   localConfig = config
   const assetsSubDirectory = process.env.NODE_ENV === 'dev'
-    ? localConfig.build.assetsSubDirectory
-    : localConfig.dev.assetsSubDirectory
+    ? localConfig.dev.assetsSubDirectory
+    : localConfig.build.assetsSubDirectory
   return path.posix.join(assetsSubDirectory, _path)
 }
 
@@ -30,8 +30,8 @@ exports.cssLoaders = function (options, config) {
   }
 
   function generateLoaders (loader, loaderOptions) {
-    const loaders = [cssLoader,px2remLoader]
-    
+    const loaders = [cssLoader, px2remLoader]
+
     if (loader) {
       loaders.push({
         loader: require.resolve(`${loader}-loader`),
@@ -41,10 +41,10 @@ exports.cssLoaders = function (options, config) {
       })
     }
     if (options.extract) {
-      return  [{
+      return [{
         loader: MiniCssExtractPlugin.loader,
         options: {
-          publicPath: localConfig.build.assetsPublicPath === './' ? '../../' : localConfig.build.assetsPublicPath,
+          publicPath: localConfig.build.assetsPublicPath === './' ? '../../' : localConfig.build.assetsPublicPath
         }
       }].concat(loaders)
     } else {
@@ -53,7 +53,7 @@ exports.cssLoaders = function (options, config) {
   }
   return {
     css: generateLoaders(),
-    scss: generateLoaders('fast-sass'),
+    scss: generateLoaders('fast-sass')
   }
 }
 
