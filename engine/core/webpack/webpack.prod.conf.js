@@ -6,14 +6,14 @@ const webpack = require('webpack')
 const merge = require('webpack-merge')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const loadMinified = require('./load-minified')
 
 module.exports = (config) => {
-  const { projectPath } = config
+  const { projectPath, buildDistPath } = config
   const baseWebpackConfig = require('./webpack.base.conf')(config)
   return merge(baseWebpackConfig, {
     mode: 'production',
@@ -25,12 +25,12 @@ module.exports = (config) => {
     },
     devtool: config.build.productionSourceMap ? '#source-map' : false,
     output: {
-      path: config.build.assetsRoot,
+      path: buildDistPath,
       filename: utils.assetsPath('js/[name].[chunkhash].js', config),
       chunkFilename: utils.assetsPath('js/[id].[chunkhash].js', config)
     },
     performance: {
-      hints: 'warning', 
+      hints: 'warning',
       maxEntrypointSize: 500000,
       maxAssetSize: 500000
     },
@@ -104,10 +104,10 @@ module.exports = (config) => {
         maxChunks: 10 // Must be greater than or equal to one
         // minChunkSize: 1000
       }),
-      //作用域提升,提升代码在浏览器执行速度
+      // 作用域提升,提升代码在浏览器执行速度
       new webpack.optimize.ModuleConcatenationPlugin(),
 
-      //根据模块相对路径生成四位数hash值作为模块id
+      // 根据模块相对路径生成四位数hash值作为模块id
       new webpack.HashedModuleIdsPlugin(),
       // generate dist index.html with correct asset hash for caching.
       // you can customize output by editing /index.html

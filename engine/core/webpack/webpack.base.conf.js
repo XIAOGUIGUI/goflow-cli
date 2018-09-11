@@ -14,6 +14,7 @@ function resolve (dir) {
 
 module.exports = (config) => {
   const { root, buildDistPath, projectPath } = config
+  const { assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
   let plugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders, config)
@@ -24,7 +25,7 @@ module.exports = (config) => {
   if (process.env.NODE_ENV !== 'dev' && config.build.imgResourcesDomain && config.build.imgResourcesDomain !== '') {
     imgLoaderOptions.publicPath = config.build.imgResourcesDomain
   }
-  let publicPath = config.dev.assetsPublicPath
+  let publicPath = assetsPublicPath
   if (process.env.NODE_ENV !== 'dev' && config.build.resourcesDomain && config.build.resourcesDomain !== '') {
     publicPath = config.build.resourcesDomain
   }
@@ -54,7 +55,7 @@ module.exports = (config) => {
     module: {
       rules: [
         {
-          test: /Preheat\.(js|vue)$/,
+          test: /\.(js|vue)$/,
           loader: require.resolve('eslint-loader'),
           enforce: 'pre',
           include: [resolve('src'), resolve('test')],
@@ -108,11 +109,11 @@ module.exports = (config) => {
       new WebpackBar({
         compiledIn: false,
         name: process.env.NODE_ENV
+      }),
+      new StyleLintPlugin({
+        configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
+        files: ['src/**/*.vue', 'src/sass/*.s?(a|c)ss']
       })
-      // new StyleLintPlugin({
-      //   configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
-      //   files: ['src/**/*.vue', 'src/sass/*.s?(a|c)ss']
-      // })
     ].concat(plugins)
   }
 }
