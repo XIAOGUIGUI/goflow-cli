@@ -28,7 +28,8 @@ const start = async config => {
   })
   config.dev.port = freePort[freePort.length - 1]
   let common = require('./core/common/common')(config, 'dev')
-  const { projectPath } = common.config
+  const { projectPath, browserslist } = common.config
+  process.env.browserslist = browserslist
   try {
     if (config.mode !== 'webpack') {
       await gulp(common)

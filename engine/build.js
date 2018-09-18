@@ -5,6 +5,8 @@ module.exports = async config => {
   process.env.NODE_ENV = 'build'
   try {
     common = require('./core/common/common')(config, 'build')
+    const { browserslist } = common.config
+    process.env.browserslist = browserslist
     if (config.mode !== 'webpack') {
       await gulp(common)
     } else {
