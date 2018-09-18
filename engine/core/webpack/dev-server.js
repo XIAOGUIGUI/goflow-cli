@@ -40,7 +40,7 @@ let runner = (config, resolve) => {
       hash: false,
       entrypoints: false,
       version: false,
-      warnings: false
+      warnings: false,
       errorDetails: false
     },
     watchOptions: {

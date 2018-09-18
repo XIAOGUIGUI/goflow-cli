@@ -2,7 +2,8 @@ const path = require('path')
 module.exports = (gulp, common, resolve) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { root, projectPath, assetsPath } = common.config
-  const {userArgs, env} = common.config[process.env.NODE_ENV]
+  const {env} = common.config[process.env.NODE_ENV]
+  const defineVariable = require('../common/define_variable')(common.config)
   const jsPath = path.resolve(projectPath, './src/js/**/*.js')
   const distPath = path.resolve(assetsPath, './js')
   const es2015Path = path.resolve(root, './node_modules/babel-preset-es2015')
@@ -12,16 +13,11 @@ module.exports = (gulp, common, resolve) => {
   if (env === 'prod') {
     uglifyOption.compress.drop_console = true
   }
-  let data = {
-    userArgs,
-    NODE_ENV: env,
-    DEBUG: DEV
-  }
   gulp.src(jsPath)
     .pipe(common.plugins.changed(distPath, {
       extension: '.js'
     }))
-    .pipe(common.plugins.preprocess({ context: data }))
+    .pipe(common.plugins.preprocess({ context: defineVariable }))
     .pipe(common.plugins.babel({
       presets: [es2015Path]
     }))
