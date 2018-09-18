@@ -42,7 +42,7 @@ var templateFunction = function (data) {
   let perSprite = data.sprites.map(function (sprite) {
     let name = sprite.name
     if (spriteNameMap[name]) {
-      name = spriteNameMap[name]
+      name = spriteNameMap[name].replace(/,\s*./g, ',\n.')
     } else {
       name = `.icon-${name}`
     }
