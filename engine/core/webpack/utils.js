@@ -28,10 +28,21 @@ exports.cssLoaders = function (options, config) {
       remUnit: localConfig.px2rem.root_value
     }
   }
+  const autoprefixerLoader = {
+    loader: path.resolve(appNodeModules, 'postcss-loader'),
+    options: {
+      sourceMap: options.sourceMap,
+      config: {
+        path: path.resolve(__dirname, '../common/postcss.config.js')
+      }
+    }
+  }
 
   function generateLoaders (loader, loaderOptions) {
-    const loaders = [cssLoader, px2remLoader]
-
+    const loaders = [cssLoader, autoprefixerLoader]
+    if (localConfig.px2rem.enable === true) {
+      loaders.push(px2remLoader)
+    }
     if (loader) {
       loaders.push({
         loader: require.resolve(`${loader}-loader`),
