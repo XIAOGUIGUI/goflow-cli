@@ -11,6 +11,7 @@ module.exports = config => {
   }, config)
   return {
     config: {
+      postcss: [require('autoprefixer')],
       loaders: cssLoaders,
       transformToRequire: {
         video: ['src', 'poster'],

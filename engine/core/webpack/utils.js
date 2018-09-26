@@ -5,9 +5,7 @@ let localConfig
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 exports.assetsPath = function (_path, config) {
   localConfig = config
-  const assetsSubDirectory = process.env.NODE_ENV === 'dev'
-    ? localConfig.dev.assetsSubDirectory
-    : localConfig.build.assetsSubDirectory
+  const assetsSubDirectory = localConfig[process.env.NODE_ENV].assetsSubDirectory
   return path.posix.join(assetsSubDirectory, _path)
 }
 
@@ -18,7 +16,7 @@ exports.cssLoaders = function (options, config) {
   const cssLoader = {
     loader: path.resolve(appNodeModules, 'css-loader'),
     options: {
-      minimize: process.env.NODE_ENV === 'production',
+      minimize: localConfig[process.env.NODE_ENV].env !== 'development',
       sourceMap: options.sourceMap
     }
   }
@@ -46,7 +44,7 @@ exports.cssLoaders = function (options, config) {
       return [{
         loader: MiniCssExtractPlugin.loader,
         options: {
-          publicPath: localConfig.build.assetsPublicPath === './' ? '../../' : localConfig.build.assetsPublicPath
+          publicPath: localConfig[process.env.NODE_ENV].assetsPublicPath === './' ? '../../' : localConfig.build.assetsPublicPath
         }
       }].concat(loaders)
     } else {
