@@ -79,13 +79,12 @@ module.exports = (config) => {
         name: true,
         cacheGroups: {
           // 设置为 false 以禁用默认缓存组
-          default: false,
           element: {
             name: 'element',
             test: /[\\/]node_modules[\\/]element-ui[\\/]/,
             chunks: 'initial',
             // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
-            priority: -10
+            priority: 20
           },
           lodash: {
             name: 'lodash',

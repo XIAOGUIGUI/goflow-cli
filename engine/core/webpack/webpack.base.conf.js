@@ -13,7 +13,7 @@ function resolve (dir) {
 }
 
 module.exports = (config) => {
-  const { root, buildDistPath, projectPath } = config
+  const { root, buildDistPath, projectPath, elementUi } = config
   const { assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
@@ -33,11 +33,20 @@ module.exports = (config) => {
   Object.assign(vueLoaderConfig.config.loaders, {
     js: require.resolve('happypack/loader') + '?id=happy-babel-vue'
   })
+  let entry = {}
+  if (elementUi === true) {
+    entry = {
+      element: ['element-ui'],
+      app: './src/main.js'
+    }
+  } else {
+    entry = {
+      app: './src/main.js'
+    }
+  }
   return {
     mode: 'development',
-    entry: {
-      app: './src/main.js'
-    },
+    entry,
     output: {
       path: buildDistPath,
       filename: '[name].js',
@@ -53,6 +62,7 @@ module.exports = (config) => {
 
     },
     module: {
+      noParse: /node_modules\/(element-ui\.js)/,
       rules: [
         {
           test: /\.(js|vue)$/,
