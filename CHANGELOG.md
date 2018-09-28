@@ -1,11 +1,16 @@
 ## Unreleased
+* [null]
+
+## 1.0.5 (Sep 27, 2018)
+
+* 修复打包element-ui代码无法运行。
 
 ## 1.0.4 (Sep 27, 2018)
 
 * 修复css兼容性在非Windows系统无法添加。
 * 修复svg-sprite-loader非本地node_modules指向。
 
-* [null]
+
 ## 1.0.3 (Sep 18, 2018)
 
 * 修复雪碧图生成样式图标名逗号不换行问题
