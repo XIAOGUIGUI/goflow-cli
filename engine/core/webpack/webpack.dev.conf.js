@@ -31,7 +31,16 @@ module.exports = (config) => {
       // https://github.com/ampedandwired/html-webpack-plugin
       new HtmlWebpackPlugin({
         filename: `index.html`,
-        template: `${projectPath}/dist/index.html`,
+        template: `${projectPath}/dist/index/index.html`,
+        chunks: ['manifest', 'vendor', 'index'],
+        inject: true,
+        serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname,
+          './service-worker-dev.js'), 'utf-8')}</script>`
+      }),
+      new HtmlWebpackPlugin({
+        filename: `about.html`,
+        template: `${projectPath}/dist/about/about.html`,
+        chunks: ['manifest', 'vendor', 'about'],
         inject: true,
         serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname,
           './service-worker-dev.js'), 'utf-8')}</script>`

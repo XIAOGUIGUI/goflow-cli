@@ -11,11 +11,12 @@ const toPromise = (func, gulp, common) => {
   })
 }
 module.exports = async common => {
-  const { projectPath, buildDistPath } = common.config
+  const { projectPath, buildDistPath, multiple } = common.config
   del.sync([buildDistPath], { force: true })
   await toPromise(SPRITES, gulp, common)
   await toPromise(TaskArt, gulp, common)
-  common.plugins.watch(path.resolve(projectPath, './src/*.html'), () => {
+  let htmlPath = multiple.enable ? './src/views/**?/*.html' : './src/*.html'
+  common.plugins.watch(path.resolve(projectPath, htmlPath), () => {
     TaskArt(gulp, common)
   })
   common.plugins.watch(path.resolve(projectPath, './src/art_common/*.html'), () => {

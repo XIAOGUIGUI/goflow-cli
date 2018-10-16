@@ -7,13 +7,14 @@ const happyPlugin = require('./happyPlugin')
 const WebpackBar = require('webpackbar')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const webpackAlias = require('../common/webpack_alias')
+const getEntry = require('../common/getEntry')
 let projectPathString
 function resolve (dir) {
   return path.join(projectPathString, dir)
 }
 
 module.exports = (config) => {
-  const { root, buildDistPath, projectPath, elementUi } = config
+  const { root, buildDistPath, projectPath, elementUi, multiple } = config
   const { assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
@@ -39,6 +40,12 @@ module.exports = (config) => {
       element: ['element-ui'],
       app: './src/main.js'
     }
+  } else if (multiple.enable) {
+    entry = getEntry(config)
+    console.log(entry)
+    // entry = {
+    //   index: './src/views/index/index.js'
+    // }
   } else {
     entry = {
       app: './src/main.js'

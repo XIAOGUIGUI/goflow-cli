@@ -78,6 +78,13 @@ module.exports = (config) => {
         // cacheGroups is an object where keys are the cache group names.
         name: true,
         cacheGroups: {
+          vendor: { // 将第三方模块提取出来
+            test: /node_modules/,
+            chunks: 'initial',
+            name: 'vendor',
+            priority: 10, // 优先
+            enforce: true
+          },
           // 设置为 false 以禁用默认缓存组
           element: {
             name: 'element',
@@ -112,7 +119,20 @@ module.exports = (config) => {
       // see https://github.com/ampedandwired/html-webpack-plugin
       new HtmlWebpackPlugin({
         filename: 'index.html',
-        template: `${projectPath}/dist/index.html`,
+        template: `${projectPath}/dist/index/index.html`,
+        inject: true,
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeAttributeQuotes: true
+        },
+        chunks: ['index'],
+        serviceWorkerLoader: `<script>${loadMinified(path.join(__dirname,
+          './service-worker-prod.js'))}</script>`
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'about.html',
+        template: `${projectPath}/dist/about/about.html`,
         inject: true,
         minify: {
           removeComments: true,
@@ -120,6 +140,7 @@ module.exports = (config) => {
           removeAttributeQuotes: true
         },
         chunksSortMode: 'dependency',
+        chunks: ['about'],
         serviceWorkerLoader: `<script>${loadMinified(path.join(__dirname,
           './service-worker-prod.js'))}</script>`
       }),
