@@ -61,26 +61,13 @@ module.exports = (config) => {
       new webpack.optimize.SplitChunksPlugin({
         // chunks: "initial"，"async"和"all"分别是：初始块，按需块或所有块；
         chunks: 'all',
-        // （默认值：30000）块的最小大小
-        minSize: 30000,
-        // （默认值：1）分割前共享模块的最小块数
-        minChunks: 1,
-        // （缺省值5）按需加载时的最大并行请求数
-        maxAsyncRequests: 8,
         // （默认值3）入口点上的最大并行请求数
-        maxInitialRequests: 8,
+        maxInitialRequests: 5,
         // webpack 将使用块的起源和名称来生成名称: `vendors~main.js`,如项目与"~"冲突，则可通过此值修改，Eg: '-'
         automaticNameDelimiter: '~',
         // cacheGroups is an object where keys are the cache group names.
         name: true,
         cacheGroups: {
-          vendor: { // 将第三方模块提取出来
-            test: /node_modules/,
-            chunks: 'initial',
-            name: 'vendor',
-            priority: 10, // 优先
-            enforce: true
-          },
           // 设置为 false 以禁用默认缓存组
           element: {
             name: 'element',
