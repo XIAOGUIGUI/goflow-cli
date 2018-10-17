@@ -5,12 +5,10 @@ const utils = require('./utils')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
-const loadMinified = require('./load-minified')
 
 module.exports = (config) => {
   const { projectPath, buildDistPath } = config
@@ -114,36 +112,6 @@ module.exports = (config) => {
 
       // 根据模块相对路径生成四位数hash值作为模块id
       new webpack.HashedModuleIdsPlugin(),
-      // generate dist index.html with correct asset hash for caching.
-      // you can customize output by editing /index.html
-      // see https://github.com/ampedandwired/html-webpack-plugin
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: `${projectPath}/dist/index/index.html`,
-        inject: true,
-        minify: {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true
-        },
-        chunks: ['index'],
-        serviceWorkerLoader: `<script>${loadMinified(path.join(__dirname,
-          './service-worker-prod.js'))}</script>`
-      }),
-      new HtmlWebpackPlugin({
-        filename: 'about.html',
-        template: `${projectPath}/dist/about/about.html`,
-        inject: true,
-        minify: {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true
-        },
-        chunksSortMode: 'dependency',
-        chunks: ['about'],
-        serviceWorkerLoader: `<script>${loadMinified(path.join(__dirname,
-          './service-worker-prod.js'))}</script>`
-      }),
       // copy custom static assets
       new CopyWebpackPlugin([
         {

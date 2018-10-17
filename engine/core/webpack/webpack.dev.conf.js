@@ -1,16 +1,13 @@
 'use strict'
 
-const fs = require('fs')
 const path = require('path')
 const utils = require('./utils')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 // add hot-reload related code to entry chunks
 
 module.exports = (config) => {
-  const { projectPath } = config
   const baseWebpackConfig = require('./webpack.base.conf')(config)
   const defineVariable = require('../common/define_variable')(config)
   const devClientPath = path.resolve(__dirname, './dev-client.js')
@@ -29,22 +26,6 @@ module.exports = (config) => {
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       // https://github.com/ampedandwired/html-webpack-plugin
-      new HtmlWebpackPlugin({
-        filename: `index.html`,
-        template: `${projectPath}/dist/index/index.html`,
-        chunks: ['manifest', 'vendor', 'index'],
-        inject: true,
-        serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname,
-          './service-worker-dev.js'), 'utf-8')}</script>`
-      }),
-      new HtmlWebpackPlugin({
-        filename: `about.html`,
-        template: `${projectPath}/dist/about/about.html`,
-        chunks: ['manifest', 'vendor', 'about'],
-        inject: true,
-        serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname,
-          './service-worker-dev.js'), 'utf-8')}</script>`
-      }),
       new FriendlyErrorsPlugin({
         compilationSuccessInfo: {
           messages: [`Running: http://${config.dev.ip}:${config.dev.port}`]

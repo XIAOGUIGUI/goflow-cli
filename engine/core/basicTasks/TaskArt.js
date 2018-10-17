@@ -20,8 +20,14 @@ module.exports = (gulp, common, other) => {
     NODE_ENV: env,
     DEBUG: DEV
   }
-  gulp
-    .src(srcPath)
+  if (multiple.enable) {
+    data.chunkOther = multiple.chunkOther
+  }
+  gulp.src(srcPath)
+    .pipe(common.plugins.if(multiple.enable, common.plugins.rename(function (Filepath) {
+      Filepath.dirname = ''
+      data.pageName = Filepath.basename
+    })))
     .pipe(common.plugins.if(hasChange, common.plugins.changed(buildDistPath)))
     .pipe(common.plugins.htmlArt({
       paths: [artCommonPath],

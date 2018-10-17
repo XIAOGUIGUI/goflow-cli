@@ -7,7 +7,7 @@ const happyPlugin = require('./happyPlugin')
 const WebpackBar = require('webpackbar')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const webpackAlias = require('../common/webpack_alias')
-const getEntry = require('../common/getEntry')
+const getHtmlPlugins = require('../common/getHtmlPlugins')
 let projectPathString
 function resolve (dir) {
   return path.join(projectPathString, dir)
@@ -18,7 +18,8 @@ module.exports = (config) => {
   const { assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
-  let plugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders, config)
+  let happyplugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders, config)
+  let htmlplugins = getHtmlPlugins(config)
   let imgLoaderOptions = {
     limit: 10000,
     name: utils.assetsPath('img/[name].[hash:7].[ext]', config)
@@ -41,11 +42,7 @@ module.exports = (config) => {
       app: './src/main.js'
     }
   } else if (multiple.enable) {
-    entry = getEntry(config)
-    console.log(entry)
-    // entry = {
-    //   index: './src/views/index/index.js'
-    // }
+    entry = multiple.entries
   } else {
     entry = {
       app: './src/main.js'
@@ -139,6 +136,6 @@ module.exports = (config) => {
         configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
         files: ['src/**/*.vue', 'src/sass/*.s?(a|c)ss']
       })
-    ].concat(plugins)
+    ].concat(happyplugins).concat(htmlplugins)
   }
 }
