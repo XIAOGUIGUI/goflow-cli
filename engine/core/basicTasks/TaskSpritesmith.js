@@ -16,6 +16,7 @@ var templateFunction = function (data) {
   let templateConfig = _.defaultsDeep(templateOption, {
     spritesheetNameMap: {},
     spriteNameMap: {},
+    spritesheetDisRem: {},
     spritesheetClassMap: {}
   })
   if (templateConfig && templateConfig.spritesheetClassMap[spritesName]) {
@@ -24,19 +25,24 @@ var templateFunction = function (data) {
     startSpace = '  '
     closeSpace = '  '
   }
+  let unit = 'px'
+  if (templateConfig && templateConfig.spritesheetDisRem && templateConfig.spritesheetDisRem[spritesName]) {
+    unit = 'PX'
+  }
   if (templateConfig && templateConfig.spritesheetNameMap[spritesName]) {
     let name = templateConfig.spritesheetNameMap[spritesName]
     spritesheetName = name.replace(/,\s*./g, ',\n.')
   } else {
     spritesheetName = `.icon-${spritesName}`
   }
-  let shared = '{start}N {\n\tdisplay: inline-block;\n\n\tbackground-image: url("I");\n\tbackground-repeat: no-repeat;\n\tbackground-size: Wpx, Hpx;\n{close}}\n'
+  let shared = '{start}N {\n\tdisplay: inline-block;\n\n\tbackground-image: url("I");\n\tbackground-repeat: no-repeat;\n\tbackground-size: WU, HU;\n{close}}\n'
     .replace('{start}', startSpace)
     .replace('{close}', closeSpace)
     .replace('N', spritesheetName)
     .replace('I', data.sprites[0].image)
     .replace('W', data.spritesheet.width)
     .replace('H', data.spritesheet.height)
+    .replace(/U/g, unit)
     .replace(/\t/g, shareSpace)
   let spriteNameMap = templateConfig && templateConfig.spriteNameMap[spritesName] ? templateConfig.spriteNameMap[spritesName] : {}
   let perSprite = data.sprites.map(function (sprite) {
@@ -51,18 +57,18 @@ var templateFunction = function (data) {
     if (isRem && sprite.offset_x !== 0) {
       x = (sprite.offset_x / (sprite.width - data.spritesheet.width) * 100) + '%'
     } else if (sprite.offset_x !== 0) {
-      x = sprite.offset_x + 'px'
+      x = sprite.offset_x + unit
     } else {
       x = sprite.offset_x
     }
     if (isRem && sprite.offset_y !== 0) {
       y = (sprite.offset_y / (sprite.height - data.spritesheet.height) * 100) + '%'
     } else if (sprite.offset_y !== 0) {
-      y = sprite.offset_y + 'px'
+      y = sprite.offset_y + unit
     } else {
       y = sprite.offset_y
     }
-    return '{start}N {\n\twidth: Wpx;\n\theight: Hpx;\n\n\tbackground-position: X Y;\n{close}}'
+    return '{start}N {\n\twidth: WU;\n\theight: HU;\n\n\tbackground-position: X Y;\n{close}}'
       .replace('{start}', startSpace)
       .replace('{close}', closeSpace)
       .replace('N', name)
@@ -70,6 +76,7 @@ var templateFunction = function (data) {
       .replace('H', sprite.height + 1)
       .replace('X', x)
       .replace('Y', y)
+      .replace(/U/g, unit)
       .replace(/\t/g, shareSpace)
   }).join('\n\n')
   if (spritesheetClass !== '') {
