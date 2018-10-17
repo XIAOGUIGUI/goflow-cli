@@ -1,6 +1,7 @@
 'use strict'
 
 const path = require('path')
+const webpack = require('webpack')
 
 const utils = require('./utils')
 const happyPlugin = require('./happyPlugin')
@@ -18,6 +19,7 @@ module.exports = (config) => {
   const { assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
+  const defineVariable = require('../common/define_variable')(config)
   let happyplugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders, config)
   let htmlplugins = getHtmlPlugins(config)
   let imgLoaderOptions = {
@@ -128,6 +130,7 @@ module.exports = (config) => {
       ]
     },
     plugins: [
+      new webpack.DefinePlugin(defineVariable),
       new WebpackBar({
         compiledIn: false,
         name: process.env.NODE_ENV

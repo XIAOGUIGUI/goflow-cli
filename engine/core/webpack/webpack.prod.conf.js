@@ -13,7 +13,6 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 module.exports = (config) => {
   const { projectPath, buildDistPath } = config
   const baseWebpackConfig = require('./webpack.base.conf')(config)
-  const defineVariable = require('../common/define_variable')(config)
   return merge(baseWebpackConfig, {
     mode: 'production',
     module: {
@@ -34,7 +33,6 @@ module.exports = (config) => {
       maxAssetSize: 500000
     },
     plugins: [
-      new webpack.DefinePlugin(defineVariable),
       new ParallelUglifyPlugin({
         cacheDir: '.cache/',
         uglifyJS: {

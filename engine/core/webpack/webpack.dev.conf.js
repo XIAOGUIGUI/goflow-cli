@@ -9,7 +9,6 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 module.exports = (config) => {
   const baseWebpackConfig = require('./webpack.base.conf')(config)
-  const defineVariable = require('../common/define_variable')(config)
   const devClientPath = path.resolve(__dirname, './dev-client.js')
   Object.keys(baseWebpackConfig.entry).forEach(function (name) {
     baseWebpackConfig.entry[name] = [devClientPath].concat(baseWebpackConfig.entry[name])
@@ -21,7 +20,6 @@ module.exports = (config) => {
     // cheap-module-eval-source-map is faster for development
     devtool: '#cheap-module-eval-source-map',
     plugins: [
-      new webpack.DefinePlugin(defineVariable),
       // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
