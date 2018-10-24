@@ -5,6 +5,7 @@ const loadMinified = require('../webpack/load-minified')
 module.exports = (config) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { projectPath, multiple } = config
+  const { assetsPublicPath } = config[process.env.NODE_ENV]
   let options
   if (DEV) {
     options = {
@@ -22,7 +23,7 @@ module.exports = (config) => {
       },
       chunksSortMode: 'dependency',
       serviceWorkerLoader: `<script>${loadMinified(path.join(__dirname,
-        '../webpack/service-worker-prod.js'))}</script>`
+        '../webpack/service-worker-prod.js'), assetsPublicPath)}</script>`
     }
   }
 
