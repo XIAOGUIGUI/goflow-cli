@@ -10,6 +10,9 @@ module.exports = {
     replace: true,
     media_query: false
   },
+  multiple: {
+    enable: false
+  },
   spritesmith: {
     algorithm: 'binary-tree',
     padding: 4
