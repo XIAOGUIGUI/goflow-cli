@@ -2,9 +2,10 @@
 const path = require('path')
 module.exports = (gulp, common, other) => {
   const DEV = process.env.NODE_ENV === 'dev'
-  const { projectPath, buildDistPath, publicAssetsPath } = common.config
+  const { projectPath, buildDistPath, publicAssetsPath, multiple } = common.config
   const { userArgs, env } = common.config[process.env.NODE_ENV]
-  const srcPath = path.resolve(projectPath, './src/*.html')
+  let htmlPath = multiple.enable ? './src/views/**?/*.html' : './src/*.html'
+  const srcPath = path.resolve(projectPath, htmlPath)
   const artCommonPath = path.resolve(projectPath, './src/art_common')
   let hasChange = true
   let callBack
@@ -19,8 +20,14 @@ module.exports = (gulp, common, other) => {
     NODE_ENV: env,
     DEBUG: DEV
   }
-  gulp
-    .src(srcPath)
+  if (multiple.enable) {
+    data.chunkOther = multiple.chunkOther
+  }
+  gulp.src(srcPath)
+    .pipe(common.plugins.if(multiple.enable, common.plugins.rename(function (Filepath) {
+      Filepath.dirname = ''
+      data.pageName = Filepath.basename
+    })))
     .pipe(common.plugins.if(hasChange, common.plugins.changed(buildDistPath)))
     .pipe(common.plugins.htmlArt({
       paths: [artCommonPath],

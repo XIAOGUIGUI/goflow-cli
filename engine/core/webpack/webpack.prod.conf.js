@@ -5,17 +5,14 @@ const utils = require('./utils')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
-const loadMinified = require('./load-minified')
 
 module.exports = (config) => {
   const { projectPath, buildDistPath } = config
   const baseWebpackConfig = require('./webpack.base.conf')(config)
-  const defineVariable = require('../common/define_variable')(config)
   return merge(baseWebpackConfig, {
     mode: 'production',
     module: {
@@ -36,7 +33,6 @@ module.exports = (config) => {
       maxAssetSize: 500000
     },
     plugins: [
-      new webpack.DefinePlugin(defineVariable),
       new ParallelUglifyPlugin({
         cacheDir: '.cache/',
         uglifyJS: {
@@ -65,14 +61,8 @@ module.exports = (config) => {
       new webpack.optimize.SplitChunksPlugin({
         // chunks: "initial"，"async"和"all"分别是：初始块，按需块或所有块；
         chunks: 'all',
-        // （默认值：30000）块的最小大小
-        minSize: 30000,
-        // （默认值：1）分割前共享模块的最小块数
-        minChunks: 1,
-        // （缺省值5）按需加载时的最大并行请求数
-        maxAsyncRequests: 8,
         // （默认值3）入口点上的最大并行请求数
-        maxInitialRequests: 8,
+        maxInitialRequests: 5,
         // webpack 将使用块的起源和名称来生成名称: `vendors~main.js`,如项目与"~"冲突，则可通过此值修改，Eg: '-'
         automaticNameDelimiter: '~',
         // cacheGroups is an object where keys are the cache group names.
@@ -107,22 +97,6 @@ module.exports = (config) => {
 
       // 根据模块相对路径生成四位数hash值作为模块id
       new webpack.HashedModuleIdsPlugin(),
-      // generate dist index.html with correct asset hash for caching.
-      // you can customize output by editing /index.html
-      // see https://github.com/ampedandwired/html-webpack-plugin
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: `${projectPath}/dist/index.html`,
-        inject: true,
-        minify: {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true
-        },
-        chunksSortMode: 'dependency',
-        serviceWorkerLoader: `<script>${loadMinified(path.join(__dirname,
-          './service-worker-prod.js'))}</script>`
-      }),
       // copy custom static assets
       new CopyWebpackPlugin([
         {
