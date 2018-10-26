@@ -1,6 +1,13 @@
 ## Unreleased
 * [null]
 
+## 1.0.6 (Oct 26, 2018)
+
+* 添加多页面支持。
+* 添加雪碧图rem配置不转换支持。
+* 添加process自定义变量的支持。
+* 添加service-worker分开部署的支持
+
 ## 1.0.5 (Sep 27, 2018)
 
 * 修复打包element-ui代码无法运行。
