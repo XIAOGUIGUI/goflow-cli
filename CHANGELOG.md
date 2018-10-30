@@ -1,5 +1,8 @@
 ## Unreleased
 * [null]
+## 1.0.7 (Oct 30, 2018)
+
+* 添加service worker资源cdn的支持
 
 ## 1.0.6 (Oct 26, 2018)
 
