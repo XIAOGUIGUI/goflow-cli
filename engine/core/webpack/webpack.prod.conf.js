@@ -12,7 +12,22 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 
 module.exports = (config) => {
   const { projectPath, buildDistPath } = config
+  const { assetsPublicPath } = config[process.env.NODE_ENV]
   const baseWebpackConfig = require('./webpack.base.conf')(config)
+  let SwOptions = {
+    cacheId: config.serviceWorker.cacheId,
+    filename: 'service-worker.js',
+    templateFilePath: path.resolve(__dirname, './service-worker.tmpl'),
+    staticFileGlobs: ['dist/**/*.{js,html,css,jpg,png,webp,eot,svg,ttf,woff}'],
+    minify: true,
+    stripPrefix: 'dist/'
+  }
+  if (assetsPublicPath.indexOf('//') === 0) {
+    SwOptions.staticFileGlobs = ['dist/**/*.{js,css,jpg,png,webp,eot,svg,ttf,woff}']
+    SwOptions.replacePrefix = assetsPublicPath
+  } else {
+    SwOptions.staticFileGlobs = ['dist/**/*.{js,html,css,jpg,png,webp,eot,svg,ttf,woff}']
+  }
   return merge(baseWebpackConfig, {
     mode: 'production',
     module: {
@@ -106,14 +121,7 @@ module.exports = (config) => {
         }
       ]),
       // service worker caching
-      new SWPrecacheWebpackPlugin({
-        cacheId: config.serviceWorker.cacheId,
-        filename: 'service-worker.js',
-        templateFilePath: path.resolve(__dirname, './service-worker.tmpl'),
-        staticFileGlobs: ['dist/**/*.{js,html,css,jpg,png,webp}'],
-        minify: true,
-        stripPrefix: 'dist/'
-      })
+      new SWPrecacheWebpackPlugin(SwOptions)
     ]
   })
 }

@@ -1,5 +1,6 @@
 'use strict'
 
+const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
 const plugins = require('gulp-load-plugins')({
@@ -25,6 +26,8 @@ const resolve = (_config_, flag) => {
   config.buildTmpPath = path.resolve(projectPath, './dist/tmp')
   config.publicAssetsPath = flagConfig.assetsPublicPath + flagConfig.assetsSubDirectory
   config.assetsPath = path.resolve(config.buildDistPath, flagConfig.assetsSubDirectory)
+  let packageInfo = JSON.parse(fs.readFileSync(path.resolve(projectPath, 'package.json')))
+  config.version = packageInfo.version
   // 用户自定义开发参数
   let userArgs = flagConfig.userArgs || {}
   let devUserArgs = config.dev.devUserArgs || {}
