@@ -81,7 +81,7 @@ let runner = (config, resolve) => {
   // serve pure static assets
   const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
   app.use(staticPath, express.static('./static'))
-  const uri = `http://${config.dev.ip}:${config.dev.port}`
+  const uri = `http://${config.dev.ip}:${config.dev.port}/${config.dev.startPath}`
   devMiddleware.waitUntilValid(() => {
     if (autoOpenBrowser) {
       opn(uri)
