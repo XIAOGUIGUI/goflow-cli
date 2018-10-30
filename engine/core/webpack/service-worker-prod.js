@@ -14,10 +14,15 @@
   )
 
   window.addEventListener('load', function () {
-    if ('serviceWorker' in navigator &&
-          (window.location.protocol === 'https:' || isLocalhost)) {
-      navigator.serviceWorker.register('service-worker.js')
+    var version = 'appversion'
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || isLocalhost)) {
+      navigator.serviceWorker.register(`service-worker.js?v=${version}`)
         .then(function (registration) {
+          if (localStorage.getItem('sw_version') !== version) {
+            registration.update().then(function () {
+              localStorage.setItem('sw_version', version)
+            })
+          }
           // updatefound is fired if service-worker.js changes.
           registration.onupdatefound = function () {
             // updatefound is also fired the very first time the SW is installed,
@@ -38,8 +43,7 @@
                     break
 
                   case 'redundant':
-                    throw new Error('The installing ' +
-                                    'service worker became redundant.')
+                    throw new Error('The installing service worker became redundant.')
 
                   default:
                     // Ignore
