@@ -4,7 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const loadMinified = require('../webpack/load-minified')
 module.exports = (config) => {
   const DEV = process.env.NODE_ENV === 'dev'
-  const { projectPath, multiple, version } = config
+  const { projectPath, multiple, version, serviceWorker } = config
+  let cacheId = serviceWorker.cacheId
   let options
   if (DEV) {
     options = {
@@ -22,7 +23,10 @@ module.exports = (config) => {
       },
       chunksSortMode: 'dependency',
       serviceWorkerLoader: `<script>${loadMinified(path.join(__dirname,
-        '../webpack/service-worker-prod.js'), version)}</script>`
+        '../webpack/service-worker-prod.js'), {
+        version,
+        cacheId
+      })}</script>`
     }
   }
 

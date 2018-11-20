@@ -15,12 +15,13 @@
 
   window.addEventListener('load', function () {
     var version = 'appversion'
+    var swVersion = 'sw_version'
     if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || isLocalhost)) {
       navigator.serviceWorker.register(`service-worker.js?v=${version}`)
         .then(function (registration) {
-          if (localStorage.getItem('sw_version') !== version) {
+          if (localStorage.getItem(swVersion) !== version) {
             registration.update().then(function () {
-              localStorage.setItem('sw_version', version)
+              localStorage.setItem(swVersion, version)
             })
           }
           // updatefound is fired if service-worker.js changes.
