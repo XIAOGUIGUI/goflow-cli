@@ -1,5 +1,10 @@
 ## Unreleased
 * [null]
+
+## 1.0.8 (Nov 20, 2018)
+
+* 修复service worker资源localStorage的key键相同问题，与service worker的cashId一致
+
 ## 1.0.7 (Oct 30, 2018)
 
 * 添加service worker资源cdn的支持
