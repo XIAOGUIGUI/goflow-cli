@@ -1,6 +1,10 @@
 ## Unreleased
 * [null]
 
+## 1.0.9 (Nov 21, 2018)
+
+* 修复移动端低版本babel编译兼容问题
+
 ## 1.0.8 (Nov 20, 2018)
 
 * 修复service worker资源localStorage的key键相同问题，与service worker的cashId一致
