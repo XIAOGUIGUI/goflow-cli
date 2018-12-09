@@ -9,7 +9,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 module.exports = (config) => {
   const { projectPath, buildDistPath } = config
   const { assetsPublicPath } = config[process.env.NODE_ENV]
@@ -40,12 +41,45 @@ module.exports = (config) => {
     output: {
       path: buildDistPath,
       filename: utils.assetsPath('js/[name].[chunkhash].js', config),
-      chunkFilename: utils.assetsPath('js/[id].[chunkhash].js', config)
+      chunkFilename: utils.assetsPath('js/[name].[chunkhash].js', config)
     },
     performance: {
       hints: 'warning',
       maxEntrypointSize: 500000,
       maxAssetSize: 500000
+    },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          element: {
+            name: 'element',
+            test: /[\\/]node_modules[\\/]element-ui[\\/]/,
+            chunks: 'initial',
+            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
+            priority: 100
+          },
+          lodash: {
+            name: 'lodash',
+            test: /[\\/]node_modules[\\/]lodash[\\/]/,
+            chunks: 'initial',
+            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
+            priority: 100
+          },
+          components: {
+            name: 'components',
+            test: /components[\\/]/,
+            minSize: 0,
+            chunks: 'all',
+            priority: 100
+          },
+          commons: {
+            chunks: 'all',
+            name: 'chunk-comomns',
+            minChunks: 2, // 最小共用次数
+            reuseExistingChunk: false
+          }
+        }
+      }
     },
     plugins: [
       new ParallelUglifyPlugin({
@@ -63,6 +97,9 @@ module.exports = (config) => {
           }
         }
       }),
+      new AddAssetHtmlPlugin({
+        filepath: path.resolve(projectPath, 'dll/vendor.dll.js')
+      }),
       new MiniCssExtractPlugin({
         filename: utils.assetsPath('css/[name].[contenthash].css', config)
       }),
@@ -73,40 +110,55 @@ module.exports = (config) => {
           safe: true
         }
       }),
-      new webpack.optimize.SplitChunksPlugin({
-        // chunks: "initial"，"async"和"all"分别是：初始块，按需块或所有块；
-        chunks: 'all',
-        // （默认值3）入口点上的最大并行请求数
-        maxInitialRequests: 5,
-        // webpack 将使用块的起源和名称来生成名称: `vendors~main.js`,如项目与"~"冲突，则可通过此值修改，Eg: '-'
-        automaticNameDelimiter: '~',
-        // cacheGroups is an object where keys are the cache group names.
-        name: true,
-        cacheGroups: {
-          // 设置为 false 以禁用默认缓存组
-          element: {
-            name: 'element',
-            test: /[\\/]node_modules[\\/]element-ui[\\/]/,
-            chunks: 'initial',
-            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
-            priority: 20
-          },
-          lodash: {
-            name: 'lodash',
-            test: /[\\/]node_modules[\\/]lodash[\\/]/,
-            chunks: 'initial',
-            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
-            priority: -10
-          }
-        }
-      }),
-      new webpack.optimize.MinChunkSizePlugin({
-        minChunkSize: 30000 // Minimum number of characters (25kb)
-      }),
-      new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 10 // Must be greater than or equal to one
-        // minChunkSize: 1000
-      }),
+      // new webpack.optimize.SplitChunksPlugin({
+      //   // chunks: "initial"，"async"和"all"分别是：初始块，按需块或所有块；
+      //   // chunks: 'all',
+      //   // // （默认值3）入口点上的最大并行请求数
+      //   // maxInitialRequests: 5,
+      //   // // webpack 将使用块的起源和名称来生成名称: `vendors~main.js`,如项目与"~"冲突，则可通过此值修改，Eg: '-'
+      //   // automaticNameDelimiter: '~',
+      //   // // cacheGroups is an object where keys are the cache group names.
+      //   // name: true,
+      //   cacheGroups: {
+      //     // 设置为 false 以禁用默认缓存组
+      //     element: {
+      //       name: 'element',
+      //       test: /[\\/]node_modules[\\/]element-ui[\\/]/,
+      //       chunks: 'initial',
+      //       // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
+      //       priority: 100
+      //     },
+      //     lodash: {
+      //       name: 'lodash',
+      //       test: /[\\/]node_modules[\\/]lodash[\\/]/,
+      //       chunks: 'initial',
+      //       // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
+      //       priority: -10
+      //     },
+      //     // 异步加载公共包、组件等
+      //     'async-commons': {
+      //       chunks: 'async',
+      //       minChunks: 2,
+      //       minSize: 0,
+      //       name: 'async-commons',
+      //       priority: 90
+      //     },
+      //     commons: { // 其他同步加载公共包
+      //       chunks: 'all',
+      //       minChunks: 2,
+      //       minSize: 0,
+      //       name: 'commons',
+      //       priority: 80
+      //     }
+      //   }
+      // }),
+      // new webpack.optimize.MinChunkSizePlugin({
+      //   minChunkSize: 30000 // Minimum number of characters (25kb)
+      // }),
+      // new webpack.optimize.LimitChunkCountPlugin({
+      //   maxChunks: 10 // Must be greater than or equal to one
+      //   // minChunkSize: 1000
+      // }),
       // 作用域提升,提升代码在浏览器执行速度
       new webpack.optimize.ModuleConcatenationPlugin(),
 
@@ -121,7 +173,8 @@ module.exports = (config) => {
         }
       ]),
       // service worker caching
-      new SWPrecacheWebpackPlugin(SwOptions)
+      new SWPrecacheWebpackPlugin(SwOptions),
+      new BundleAnalyzerPlugin()
     ]
   })
 }

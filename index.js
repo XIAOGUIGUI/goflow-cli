@@ -33,8 +33,7 @@ program
   .command('serve')
   .description(chalk.yellow('run dev workflow in project'))
   .action((cmd) => {
-    // checkUpdate().then(() => workflow( 'dev', '', cmd ))
-    workflow('dev', '', cmd)
+    checkUpdate().then(() => workflow('dev', '', cmd))
   })
 program
   .command('build [env]')
@@ -44,12 +43,16 @@ program
       env = 'prod'
     }
     if (env !== 'prod' && env !== 'testing') {
-      console.log(
-        chalk.red(`! The env parameter only supports prod or testing.`)
-      )
+      console.log(chalk.red(`! The env parameter only supports prod or testing.`))
     } else {
-      workflow('build', env, cmd)
+      checkUpdate().then(() => workflow('build', env, cmd))
     }
+  })
+program
+  .command('build:dll')
+  .description(chalk.yellow('run build dll'))
+  .action((cmd) => {
+    checkUpdate().then(() => workflow('dll', void 0, cmd))
   })
 program
   .command('lint')

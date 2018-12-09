@@ -35,12 +35,13 @@ module.exports = (config) => {
     for (let index = 0; index < multiple.pages.length; index++) {
       options.filename = `${multiple.pages[index]}.html`
       options.template = `${projectPath}/dist/${multiple.pages[index]}.html`
-      options.chunks = ['manifest', 'vendor', multiple.pages[index]]
+      options.chunks = ['manifest', 'vendor', 'commons', multiple.pages[index]]
       plugins.push(new HtmlWebpackPlugin(options))
     }
     return plugins
   } else {
     options.filename = 'index.html'
+    // options.chunks = ['app', 'commons', 'async-commons']
     options.template = `${projectPath}/dist/index.html`
     return [new HtmlWebpackPlugin(options)]
   }

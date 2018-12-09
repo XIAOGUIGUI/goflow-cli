@@ -65,7 +65,6 @@ module.exports = (config) => {
         path.resolve(projectPath, './node_modules')
       ],
       extensions: ['.js', '.vue', '.json']
-
     },
     module: {
       noParse: /node_modules\/(element-ui\.js)/,
@@ -134,6 +133,10 @@ module.exports = (config) => {
       new WebpackBar({
         compiledIn: false,
         name: process.env.NODE_ENV
+      }),
+      new webpack.DllReferencePlugin({
+        context: projectPath,
+        manifest: require(path.resolve(projectPath, './dll/vendor.manifest.json'))
       }),
       new StyleLintPlugin({
         configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),

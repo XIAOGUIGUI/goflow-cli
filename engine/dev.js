@@ -4,11 +4,13 @@ const gulp = require('./core/dev/gulp')
 const gulpWebpack = require('./core/dev/gulp-webpack')
 let localIP = void 0
 let getLocalIPCounter = 0
-
 network.get_private_ip((err, ip) => {
-  if (err) throw err
+  if (err) {
+    ip = '127.0.0.1'
+  }
   localIP = ip
 })
+
 const start = async config => {
   if (!localIP && getLocalIPCounter < 10) {
     ++getLocalIPCounter

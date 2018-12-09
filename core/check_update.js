@@ -10,7 +10,7 @@ const { version: nowVersion } = require('../package.json')
 module.exports = async () => {
   try {
     const { version } = (await axios(
-      'https://raw.githubusercontent.com/legoflow/legoflow-cli/master/package.json',
+      'https://raw.githubusercontent.com/XIAOGUIGUI/goflow-cli/master/package.json',
       { timeout: 5000 }
     )).data
     if (compareVersion(version, nowVersion) > 0) {

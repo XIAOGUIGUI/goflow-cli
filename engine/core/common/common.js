@@ -34,6 +34,9 @@ const resolve = (_config_, flag) => {
   if (flag === 'build' && flagConfig[flagConfig.env]) {
     userArgs = _.defaultsDeep(userArgs, devUserArgs)
   }
+  if (!config.system) {
+    config.system = process.platform === 'win32' ? 'win' : 'mac'
+  }
   common.userArgs = userArgs
   common.config = config
   return common
