@@ -12,8 +12,10 @@ module.exports = async (flag = 'build', env = '', cmd = {}) => {
   if (env !== '') {
     workflowConfig[flag].env = env
   }
-  console.log(`ℹ ｢wdm｣: launching ${chalk.bold(flag)}${env !== '' ? `, env: ${chalk.bold.underline(env)}` : ''}`
-  )
+  if (flag === 'build' && cmd.analyzer) {
+    workflowConfig[flag].analyzer = true
+  }
+  console.log(`ℹ ｢wdm｣: launching ${chalk.bold(`workflow.${flag}`)}${env !== '' ? `, env: ${chalk.bold.underline(env)}` : ''}`)
   const Messager = require('../engine/messager')
 
   const { sender } = Messager
