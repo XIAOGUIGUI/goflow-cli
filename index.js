@@ -37,6 +37,7 @@ program
   })
 program
   .command('build [env]')
+  .option('-a, --analyzer', 'build with analyzer')
   .description(chalk.yellow('run build workflow in project'))
   .action((env, cmd) => {
     if (!env) {
@@ -61,11 +62,7 @@ program
     lint(cmd)
   })
 program.on('command:*', function () {
-  console.log(
-    chalk.yellow(
-      `! Command not found. Please try to use ${chalk.yellow.bold('-h')}`
-    )
-  )
+  console.log(chalk.yellow(`! Command not found. Please try to use ${chalk.yellow.bold('-h')}`))
   process.exit(1)
 })
 program.parse(process.argv)

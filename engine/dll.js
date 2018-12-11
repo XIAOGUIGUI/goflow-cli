@@ -11,7 +11,7 @@ const webpackAlias = require('./core/common/webpack_alias')
 module.exports = function (config) {
   let common = require('./core/common/common')(config, 'dev')
 
-  const { root, projectPath, system } = common.config
+  const { root, projectPath } = common.config
 
   const { dll } = config.webpack || { }
 
@@ -27,7 +27,7 @@ module.exports = function (config) {
     mode: 'production',
     entry: dll,
     output: {
-      filename: '[name].dll.js',
+      filename: '[name].[chunkhash].dll.js',
       path: path.resolve(projectPath, 'dll'),
       library: '_dll_[name]'
     },
@@ -65,7 +65,7 @@ module.exports = function (config) {
         path: path.join(projectPath, 'dll', '[name].manifest.json')
       })
     ],
-    context: system === 'mac' ? projectPath : projectPath.pathWinNorm()
+    context: projectPath
   }
 
   const compiler = webpack(dllOptions)
