@@ -25,7 +25,7 @@ module.exports = (config) => {
   const defineVariable = require('../common/define_variable')(config)
   let happyplugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders, config)
   let htmlplugins = getHtmlPlugins(config)
-  let dllPlugins = getDllPlugins(config)
+  let dllPlugins = getDllPlugins(config, htmlplugins.htmlFiles)
   let imgLoaderOptions = {
     limit: 10000,
     name: utils.assetsPath('img/[name].[hash:7].[ext]', config)
@@ -152,6 +152,6 @@ module.exports = (config) => {
     }]))
   }
   baseWebpackConfig.plugins = baseWebpackConfig.plugins.concat(happyplugins).concat(dllPlugins.dllReferencePlugins)
-  baseWebpackConfig.plugins = baseWebpackConfig.plugins.concat(htmlplugins).concat(dllPlugins.includeAssetHtmlPlugins)
+  baseWebpackConfig.plugins = baseWebpackConfig.plugins.concat(htmlplugins.plugins).concat(dllPlugins.includeAssetHtmlPlugins)
   return baseWebpackConfig
 }

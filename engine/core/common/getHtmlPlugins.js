@@ -29,19 +29,28 @@ module.exports = (config) => {
       })}</script>`
     }
   }
-
+  let result = {}
   if (multiple.enable === true) {
     let plugins = []
+    let htmlFiles = []
     for (let index = 0; index < multiple.pages.length; index++) {
       options.filename = `${multiple.pages[index]}.html`
       options.template = `${projectPath}/dist/${multiple.pages[index]}.html`
       options.chunks = ['manifest', 'vendor', multiple.pages[index]]
       plugins.push(new HtmlWebpackPlugin(options))
+      htmlFiles.push({
+        filename: `${multiple.pages[index]}.html`
+      })
     }
-    return plugins
+    result.htmlFiles = htmlFiles
+    result.plugins = plugins
   } else {
     options.filename = 'index.html'
     options.template = `${projectPath}/dist/index.html`
-    return [new HtmlWebpackPlugin(options)]
+    result.htmlFiles = [{
+      htmlFiles: 'index.html'
+    }]
+    result.plugins = [new HtmlWebpackPlugin(options)]
   }
+  return result
 }
