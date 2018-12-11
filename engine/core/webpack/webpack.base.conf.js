@@ -7,8 +7,11 @@ const utils = require('./utils')
 const happyPlugin = require('./happyPlugin')
 const WebpackBar = require('webpackbar')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 const webpackAlias = require('../common/webpack_alias')
 const getHtmlPlugins = require('../common/getHtmlPlugins')
+const getDllPlugins = require('../common/getDllPlugins')
 let projectPathString
 function resolve (dir) {
   return path.join(projectPathString, dir)
@@ -16,12 +19,13 @@ function resolve (dir) {
 
 module.exports = (config) => {
   const { root, buildDistPath, projectPath, elementUi, multiple } = config
-  const { assetsPublicPath } = config[process.env.NODE_ENV]
+  const { resourcesDomain, assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
   const defineVariable = require('../common/define_variable')(config)
   let happyplugins = happyPlugin.createHappyPlugins(vueLoaderConfig.cssLoaders, config)
   let htmlplugins = getHtmlPlugins(config)
+  let dllPlugins = getDllPlugins(config, htmlplugins.htmlFiles)
   let imgLoaderOptions = {
     limit: 10000,
     name: utils.assetsPath('img/[name].[hash:7].[ext]', config)
@@ -30,8 +34,8 @@ module.exports = (config) => {
     imgLoaderOptions.publicPath = config.build.imgResourcesDomain
   }
   let publicPath = assetsPublicPath
-  if (process.env.NODE_ENV !== 'dev' && config.build.resourcesDomain && config.build.resourcesDomain !== '') {
-    publicPath = config.build.resourcesDomain
+  if (resourcesDomain) {
+    publicPath = resourcesDomain
   }
   // vueLoader添加happypack
   Object.assign(vueLoaderConfig.config.loaders, {
@@ -50,13 +54,13 @@ module.exports = (config) => {
       app: './src/main.js'
     }
   }
-  return {
+  let baseWebpackConfig = {
     mode: 'development',
     entry,
     output: {
       path: buildDistPath,
       filename: '[name].js',
-      publicPath: publicPath
+      publicPath
     },
     resolve: {
       alias: webpackAlias(config),
@@ -65,7 +69,6 @@ module.exports = (config) => {
         path.resolve(projectPath, './node_modules')
       ],
       extensions: ['.js', '.vue', '.json']
-
     },
     module: {
       noParse: /node_modules\/(element-ui\.js)/,
@@ -139,6 +142,16 @@ module.exports = (config) => {
         configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
         files: ['src/**/*.vue', 'src/sass/*.s?(a|c)ss']
       })
-    ].concat(happyplugins).concat(htmlplugins)
+    ]
   }
+  if (dllPlugins.dllReferencePlugins.length > 0) {
+    baseWebpackConfig.plugins.push(new CopyWebpackPlugin([{
+      from: path.resolve(projectPath, './dll'),
+      to: config.build.assetsSubDirectory + '/js',
+      ignore: ['*.manifest.json']
+    }]))
+  }
+  baseWebpackConfig.plugins = baseWebpackConfig.plugins.concat(happyplugins).concat(dllPlugins.dllReferencePlugins)
+  baseWebpackConfig.plugins = baseWebpackConfig.plugins.concat(htmlplugins.plugins).concat(dllPlugins.includeAssetHtmlPlugins)
+  return baseWebpackConfig
 }

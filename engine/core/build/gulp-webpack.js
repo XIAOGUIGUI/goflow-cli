@@ -2,6 +2,7 @@ const del = require('del')
 const gulp = require('gulp')
 
 const TaskArt = require('../basicTasks/TaskArt')
+const TaskInline = require('./TaskInline')
 const webpackBuild = require('../webpack/build')
 const getMultipleConfig = require('../common/getMultipleConfig')
 const toPromise = (func, gulp, common) => {
@@ -18,5 +19,6 @@ module.exports = async common => {
   del.sync([buildDistPath], { force: true })
   await toPromise(TaskArt, gulp, common)
   await webpackBuild(common)
+  await TaskInline(gulp, common)
   common.messager.success()
 }

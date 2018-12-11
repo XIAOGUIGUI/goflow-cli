@@ -25,6 +25,10 @@ const resolve = (_config_, flag) => {
   config.buildDistPath = path.resolve(projectPath, './dist')
   config.buildTmpPath = path.resolve(projectPath, './dist/tmp')
   config.publicAssetsPath = flagConfig.assetsPublicPath + flagConfig.assetsSubDirectory
+  if (flag === 'build' && flagConfig.resourcesDomain) {
+    config.publicAssetsPath = flagConfig.resourcesDomain + flagConfig.assetsSubDirectory
+  }
+  config.relativeHtmlPath = flagConfig.relativeHtmlPath + flagConfig.assetsSubDirectory
   config.assetsPath = path.resolve(config.buildDistPath, flagConfig.assetsSubDirectory)
   let packageInfo = JSON.parse(fs.readFileSync(path.resolve(projectPath, 'package.json')))
   config.version = packageInfo.version
@@ -33,6 +37,9 @@ const resolve = (_config_, flag) => {
   let devUserArgs = config.dev.devUserArgs || {}
   if (flag === 'build' && flagConfig[flagConfig.env]) {
     userArgs = _.defaultsDeep(userArgs, devUserArgs)
+  }
+  if (!config.system) {
+    config.system = process.platform === 'win32' ? 'win' : 'mac'
   }
   common.userArgs = userArgs
   common.config = config

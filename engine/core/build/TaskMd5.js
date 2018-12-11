@@ -1,7 +1,7 @@
 const path = require('path')
 const del = require('del')
 module.exports = (gulp, common) => new Promise(resolve => {
-  const {buildDistPath, assetsPath, publicAssetsPath } = common.config
+  const { buildDistPath, assetsPath, publicAssetsPath } = common.config
   const jsPath = path.resolve(assetsPath, 'js/**/*.js')
   const cssPath = path.resolve(assetsPath, 'css/**/*.css')
   const fontPath = path.resolve(assetsPath, 'font/**/*')
@@ -14,7 +14,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
     })
     .pipe(common.plugins.rename(function (filePath) {
       let index = filePath.basename.lastIndexOf('-')
-      filePath.basename = filePath.basename.substring(0,index) + '.' + filePath.basename.substring(index+1);
+      filePath.basename = filePath.basename.substring(0, index) + '.' + filePath.basename.substring(index + 1)
     }))
     .pipe(gulp.dest(tmpPath))
     .pipe(common.plugins.rev.manifest(manifestPath, {
@@ -22,13 +22,13 @@ module.exports = (gulp, common) => new Promise(resolve => {
       merge: true
     }))
     .pipe(gulp.dest(buildDistPath))
-    .on( 'end', ()=>{
+    .on('end', () => {
       del.sync(jsPath)
       del.sync(cssPath)
       del.sync(fontPath)
       gulp.src(path.resolve(tmpPath, './**/*'))
         .pipe(gulp.dest(assetsPath))
-        .on( 'end', ()=>{
+        .on('end', () => {
           resolve()
         })
     })
