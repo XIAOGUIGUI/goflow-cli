@@ -12,6 +12,22 @@ let dllAssetsToMap = (list) => {
   return result
 }
 
+let formatManifestData = (root, data) => {
+  let result = {
+    name: data.name,
+    content: {}
+  }
+  for (const key in data.content) {
+    if (key.indexOf('goflow-cli')) {
+      let keyName = root + key.substring(key.indexOf('goflow-cli') + 10)
+      result.content[keyName] = data.content[key]
+    } else {
+      result.content[key] = data.content[key]
+    }
+  }
+  return result
+}
+
 let getAssets = (list, dllAssetsMap) => {
   let result = []
   for (let index = 0; index < list.length; index++) {
@@ -20,7 +36,7 @@ let getAssets = (list, dllAssetsMap) => {
   return result
 }
 module.exports = (config, htmlFiles) => {
-  const { projectPath, webpack: webpackConfig } = config
+  const { root, projectPath, webpack: webpackConfig } = config
   const { assetsSubDirectory } = config[process.env.NODE_ENV]
   const { dll, html } = webpackConfig
 
@@ -30,14 +46,17 @@ module.exports = (config, htmlFiles) => {
   }
   let configHtml = html || {}
   let dllOptions = []
+  const relativePath = path.relative(projectPath, root)
   const manifestFiles = glob.sync(path.resolve(projectPath, './dll/*.manifest.json'))
   const dllAssets = glob.sync(path.resolve(projectPath, './dll/*.dll.js')).map(v => `${assetsSubDirectory}/js/${path.basename(v)}`)
   const dllAssetsMap = dllAssetsToMap(dllAssets)
   if (dll) {
     manifestFiles.forEach(item => {
+      let manifest = require(item)
+      manifest = formatManifestData(relativePath, manifest)
       result.dllReferencePlugins.push(new webpack.DllReferencePlugin({
         context: projectPath,
-        manifest: require(item)
+        manifest: manifest
       }))
     })
     htmlFiles.forEach(htmlItem => {
