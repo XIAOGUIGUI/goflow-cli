@@ -48,7 +48,7 @@ module.exports = (config) => {
     options.filename = 'index.html'
     options.template = `${projectPath}/dist/index.html`
     result.htmlFiles = [{
-      htmlFiles: 'index.html'
+      filename: 'index.html'
     }]
     result.plugins = [new HtmlWebpackPlugin(options)]
   }
