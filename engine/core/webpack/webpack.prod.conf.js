@@ -10,6 +10,7 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const getCacheGroups = require('../common/getCacheGroups')
 
 module.exports = (config) => {
   const { projectPath, buildDistPath } = config
@@ -50,35 +51,7 @@ module.exports = (config) => {
     },
     optimization: {
       splitChunks: {
-        cacheGroups: {
-          element: {
-            name: 'element',
-            test: /[\\/]node_modules[\\/]element-ui[\\/]/,
-            chunks: 'initial',
-            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
-            priority: 100
-          },
-          lodash: {
-            name: 'lodash',
-            test: /[\\/]node_modules[\\/]lodash[\\/]/,
-            chunks: 'initial',
-            // 默认组的优先级为负数，以允许任何自定义缓存组具有更高的优先级（默认值为0）
-            priority: 100
-          },
-          components: {
-            name: 'components',
-            test: /components[\\/]/,
-            minSize: 0,
-            chunks: 'all',
-            priority: 100
-          },
-          commons: {
-            chunks: 'all',
-            name: 'chunk-comomns',
-            minChunks: 2, // 最小共用次数
-            reuseExistingChunk: false
-          }
-        }
+        cacheGroups: getCacheGroups(config)
       }
     },
     plugins: [
