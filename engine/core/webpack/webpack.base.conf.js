@@ -18,7 +18,7 @@ function resolve (dir) {
 }
 
 module.exports = (config) => {
-  const { root, buildDistPath, projectPath, elementUi, multiple } = config
+  const { root, buildDistPath, projectPath, multiple } = config
   const { resourcesDomain, assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
   const vueLoaderConfig = require('./vue-loader.conf')(config)
@@ -42,12 +42,7 @@ module.exports = (config) => {
     js: require.resolve('happypack/loader') + '?id=happy-babel-vue'
   })
   let entry = {}
-  if (elementUi === true) {
-    entry = {
-      element: ['element-ui'],
-      app: './src/main.js'
-    }
-  } else if (multiple.enable) {
+  if (multiple.enable) {
     entry = multiple.entries
   } else {
     entry = {
@@ -87,7 +82,7 @@ module.exports = (config) => {
         {
           test: /\.vue$/,
           loader: require.resolve('vue-loader'),
-          include: [resolve('src')],
+          include: [resolve('src'), resolve('node_modules/vux')],
           exclude: /^node_modules$/,
           options: vueLoaderConfig.config
         },
@@ -95,7 +90,7 @@ module.exports = (config) => {
           test: /\.js$/,
           loader: require.resolve('happypack/loader') + '?id=happy-babel-js',
           exclude: /^node_modules$/,
-          include: [resolve('src'), resolve('test')]
+          include: [resolve('src'), resolve('test'), resolve('node_modules/vux')]
         },
         {
           test: /\.(png|jpe?g)(\?.*)?$/,

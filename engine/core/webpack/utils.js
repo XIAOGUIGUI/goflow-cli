@@ -53,7 +53,8 @@ exports.cssLoaders = function (options, config) {
   }
   return {
     css: generateLoaders(),
-    scss: generateLoaders('fast-sass')
+    scss: generateLoaders('fast-sass'),
+    less: generateLoaders('less')
   }
 }
 
