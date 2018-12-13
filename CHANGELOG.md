@@ -1,5 +1,13 @@
 ## Unreleased
 * [null]
+## 1.1.0 (Dec 13, 2018)
+
+* 添加webpack打包dll文件功能
+* 添加对vux框架的支持
+* 添加less编译及按需加载功能
+* 添加代码分割配置功能
+* 添加loader的include配置功能
+* 修复webpack模式下htm代码无法inline问题
 
 ## 1.0.9 (Nov 21, 2018)
 
