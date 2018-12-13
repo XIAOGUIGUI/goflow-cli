@@ -21,7 +21,6 @@ let formatManifestData = (root, data) => {
     if (key.indexOf('goflow-cli')) {
       let keyName = path.join(root, key.substring(key.indexOf('goflow-cli') + 10))
       keyName = keyName.replace(/[\\/]/g, '/')
-      console.log(keyName)
       result.content[keyName] = data.content[key]
     } else {
       result.content[key] = data.content[key]

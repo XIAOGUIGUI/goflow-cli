@@ -39,7 +39,7 @@ let getInclude = (configObject) => {
 }
 
 module.exports = (config) => {
-  const { root, buildDistPath, projectPath, multiple, webpack: webpackConfig } = config
+  const { root, buildDistPath, projectPath, multiple, webpack: webpackConfig, vux } = config
   const { include } = webpackConfig
   const { resourcesDomain, assetsPublicPath } = config[process.env.NODE_ENV]
   projectPathString = projectPath
@@ -59,6 +59,12 @@ module.exports = (config) => {
   let publicPath = assetsPublicPath
   if (resourcesDomain) {
     publicPath = resourcesDomain
+  }
+  let vuxLoader = []
+  if (vux === true) {
+    vuxLoader.push({
+      loader: require.resolve('../loader/vux-loader')
+    })
   }
   // vueLoader添加happypack
   Object.assign(vueLoaderConfig.config.loaders, {
@@ -104,10 +110,12 @@ module.exports = (config) => {
         },
         {
           test: /\.vue$/,
-          loader: require.resolve('vue-loader'),
+          use: [{
+            loader: require.resolve('vue-loader'),
+            options: vueLoaderConfig.config
+          }].concat(vuxLoader),
           include: [resolve('src')].concat(includeMap.vue),
-          exclude: /^node_modules$/,
-          options: vueLoaderConfig.config
+          exclude: /^node_modules$/
         },
         {
           test: /\.js$/,

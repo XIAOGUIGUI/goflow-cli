@@ -9,7 +9,6 @@ const checkUpdate = require('./core/check_update')
 const workflow = require('./core/workflow')
 const lint = require('./core/lint')
 const { version } = require('./package.json')
-
 program
   .version(version)
   .option('-v, --version', 'output the version number')

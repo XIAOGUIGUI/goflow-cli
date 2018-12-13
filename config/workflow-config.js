@@ -14,6 +14,7 @@ module.exports = {
   multiple: {
     enable: false
   },
+  vux: false,
   spritesmith: {
     algorithm: 'binary-tree',
     padding: 4

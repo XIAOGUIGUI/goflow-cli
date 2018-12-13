@@ -27,7 +27,7 @@ let createHappyPlugin = (id, loaders) => {
   })
 }
 exports.createHappyPlugins = function (cssLoaders, config) {
-  const { appNodeModules } = config
+  const { appNodeModules, vux } = config
   babelOptions.plugins = babelOptions.plugins.concat(getbabelComponent(config))
   let babelLoader = {
     loader: path.resolve(appNodeModules, 'babel-loader'),
@@ -39,6 +39,14 @@ exports.createHappyPlugins = function (cssLoaders, config) {
   ]
   for (const extension in cssLoaders) {
     reusult.push(createHappyPlugin(`happy-${extension}`, cssLoaders[extension]))
+  }
+  if (vux === true) {
+    reusult.push(new HappyPack({
+      id: 'happy-vux',
+      loaders: [require.resolve('../loader/vux-loader')],
+      threadPool: happyThreadPool,
+      verbose: false
+    }))
   }
   reusult.push(new HappyPack({
     id: 'happy-vue',
