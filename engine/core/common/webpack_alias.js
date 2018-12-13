@@ -8,7 +8,7 @@ function resolve (dir) {
 module.exports = config => {
   projectPath = config.projectPath
   return {
-    vue$: 'vue/dist/vue.esm.js',
+    'vue$': 'vue/dist/vue.min.js',
     '@local/vue$': resolve('node_modules/vue/dist/vue.esm.js'),
     '@local': resolve('node_modules'),
     '@': resolve('src'),

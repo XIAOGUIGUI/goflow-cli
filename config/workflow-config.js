@@ -1,5 +1,6 @@
 module.exports = {
   mode: 'gulp',
+  webpack: {},
   px2rem: {
     // px转rem配置
     enable: false, // 是否开启
@@ -13,6 +14,7 @@ module.exports = {
   multiple: {
     enable: false
   },
+  vux: false,
   spritesmith: {
     algorithm: 'binary-tree',
     padding: 4
@@ -23,8 +25,10 @@ module.exports = {
   browserslist: ['> 1%', 'last 2 versions', 'not ie <= 8', 'Android >= 4'],
   build: {
     env: 'production',
+    analyzer: false,
     assetsSubDirectory: 'static',
-    assetsPublicPath: './'
+    assetsPublicPath: './',
+    relativeHtmlPath: './'
   },
   testing: {
     env: 'testing'
@@ -32,9 +36,11 @@ module.exports = {
   dev: {
     env: 'development',
     port: 8080,
+    startPath: 'index.html',
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
+    relativeHtmlPath: '/',
     proxyTable: {},
     cssSourceMap: false
   }

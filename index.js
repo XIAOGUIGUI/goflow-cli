@@ -9,7 +9,6 @@ const checkUpdate = require('./core/check_update')
 const workflow = require('./core/workflow')
 const lint = require('./core/lint')
 const { version } = require('./package.json')
-
 program
   .version(version)
   .option('-v, --version', 'output the version number')
@@ -33,23 +32,27 @@ program
   .command('serve')
   .description(chalk.yellow('run dev workflow in project'))
   .action((cmd) => {
-    // checkUpdate().then(() => workflow( 'dev', '', cmd ))
-    workflow('dev', '', cmd)
+    checkUpdate().then(() => workflow('dev', '', cmd))
   })
 program
   .command('build [env]')
+  .option('-a, --analyzer', 'build with analyzer')
   .description(chalk.yellow('run build workflow in project'))
   .action((env, cmd) => {
     if (!env) {
       env = 'prod'
     }
     if (env !== 'prod' && env !== 'testing') {
-      console.log(
-        chalk.red(`! The env parameter only supports prod or testing.`)
-      )
+      console.log(chalk.red(`! The env parameter only supports prod or testing.`))
     } else {
-      workflow('build', env, cmd)
+      checkUpdate().then(() => workflow('build', env, cmd))
     }
+  })
+program
+  .command('build:dll')
+  .description(chalk.yellow('run build dll'))
+  .action((cmd) => {
+    checkUpdate().then(() => workflow('dll', void 0, cmd))
   })
 program
   .command('lint')
@@ -58,11 +61,7 @@ program
     lint(cmd)
   })
 program.on('command:*', function () {
-  console.log(
-    chalk.yellow(
-      `! Command not found. Please try to use ${chalk.yellow.bold('-h')}`
-    )
-  )
+  console.log(chalk.yellow(`! Command not found. Please try to use ${chalk.yellow.bold('-h')}`))
   process.exit(1)
 })
 program.parse(process.argv)
