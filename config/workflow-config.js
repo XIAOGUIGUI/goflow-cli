@@ -14,6 +14,7 @@ module.exports = {
   multiple: {
     enable: false
   },
+  vux: false,
   spritesmith: {
     algorithm: 'binary-tree',
     padding: 4
@@ -35,6 +36,7 @@ module.exports = {
   dev: {
     env: 'development',
     port: 8080,
+    startPath: 'index.html',
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
