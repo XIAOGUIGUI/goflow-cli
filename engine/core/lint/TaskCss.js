@@ -23,9 +23,13 @@ const styleErrorFormatter = function (stylelintResults) {
     }
     resultObject.fileName = result.source && result.source.split('src')[1]
     result.warnings.forEach(function (warning) {
-      resultObject.warnings.push(warning)
+      if (!(resultObject.fileName.indexOf('.vue') > -1 && warning.rule === 'no-empty-source')) {
+        resultObject.warnings.push(warning)
+      }
     })
-    styleErrorResult.push(resultObject)
+    if (resultObject.warnings.length !== 0) {
+      styleErrorResult.push(resultObject)
+    }
   })
   if (styleErrorResult.length > 0) {
     styleErrorNotifier()
