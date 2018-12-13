@@ -6,7 +6,7 @@ const webpack = require('webpack')
 const utils = require('./utils')
 const happyPlugin = require('./happyPlugin')
 const WebpackBar = require('webpackbar')
-const StyleLintPlugin = require('stylelint-webpack-plugin')
+const StyleLintPlugin = require('../plugins/stylelint-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const webpackAlias = require('../common/webpack_alias')
@@ -166,7 +166,7 @@ module.exports = (config) => {
       }),
       new StyleLintPlugin({
         configFile: path.resolve(__dirname, '../common/default_css_stylelint.js'),
-        files: ['src/**/*.vue', 'src/sass/*.s?(a|c)ss']
+        files: ['src/**/*.vue', 'src/sass/**/*.s?(a|c)ss']
       })
     ]
   }
