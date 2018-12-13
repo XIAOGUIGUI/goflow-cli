@@ -19,7 +19,9 @@ let formatManifestData = (root, data) => {
   }
   for (const key in data.content) {
     if (key.indexOf('goflow-cli')) {
-      let keyName = root + key.substring(key.indexOf('goflow-cli') + 10)
+      let keyName = path.join(root, key.substring(key.indexOf('goflow-cli') + 10))
+      keyName = keyName.replace(/[\\/]/g, '/')
+      console.log(keyName)
       result.content[keyName] = data.content[key]
     } else {
       result.content[key] = data.content[key]
@@ -36,6 +38,7 @@ let getAssets = (list, dllAssetsMap) => {
   return result
 }
 module.exports = (config, htmlFiles) => {
+  const DEV = process.env.NODE_ENV === 'dev'
   const { root, projectPath, webpack: webpackConfig } = config
   const { assetsSubDirectory } = config[process.env.NODE_ENV]
   const { dll, html } = webpackConfig
@@ -44,6 +47,10 @@ module.exports = (config, htmlFiles) => {
     dllReferencePlugins: [],
     includeAssetHtmlPlugins: []
   }
+  if (DEV) {
+    return result
+  }
+
   let configHtml = html || {}
   let dllOptions = []
   const relativePath = path.relative(projectPath, root)
