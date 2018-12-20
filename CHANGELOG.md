@@ -1,5 +1,13 @@
 ## Unreleased
+
 * [null]
+
+## 1.1.1 (Dec 20, 2018)
+
+* 修复vux多语言替换无效问题
+* 修复vue框架开发过程中vue devtools无法使用问题
+* 修复静态检查vue文件空样式问题
+
 ## 1.1.0 (Dec 13, 2018)
 
 * 添加webpack打包dll文件功能

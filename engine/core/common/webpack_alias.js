@@ -7,8 +7,9 @@ function resolve (dir) {
 }
 module.exports = config => {
   projectPath = config.projectPath
-  return {
-    'vue$': 'vue/dist/vue.min.js',
+  const DEV = process.env.NODE_ENV === 'dev'
+  let data = {
+    'vue$': 'vue/dist/vue.esm.js',
     '@local/vue$': resolve('node_modules/vue/dist/vue.esm.js'),
     '@local': resolve('node_modules'),
     '@': resolve('src'),
@@ -18,4 +19,9 @@ module.exports = config => {
     '@pages': resolve('src/pages'),
     '@utils': resolve('src/utils')
   }
+  if (!DEV) {
+    data['vue$'] = 'vue/dist/vue.min.js'
+    data['@local/vue$'] = resolve('node_modules/vue/dist/vue.min.js')
+  }
+  return data
 }
