@@ -44,7 +44,6 @@ const resolve = (_config_, flag) => {
   if (!config.system) {
     config.system = process.platform === 'win32' ? 'win' : 'mac'
   }
-  console.log(config)
   common.userArgs = userArgs
   common.config = config
   return common
