@@ -20,7 +20,6 @@ module.exports = (gulp, common) => new Promise(resolve => {
     })))
     .pipe(gulp.dest(buildDistPath))
     .on('end', () => {
-      common.messager.log('HTML 合并资源成功')
       resolve()
     })
 })

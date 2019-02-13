@@ -19,9 +19,7 @@ module.exports = {
     algorithm: 'binary-tree',
     padding: 4
   },
-  lang: {
-    defulteLang: 'en'
-  },
+  lang: null,
   browserslist: ['> 1%', 'last 2 versions', 'not ie <= 8', 'Android >= 4'],
   build: {
     env: 'production',

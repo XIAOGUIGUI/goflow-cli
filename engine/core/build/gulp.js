@@ -55,10 +55,10 @@ module.exports = async common => {
       }
       common.messager.log('多语言ART 编译完成')
     }
-    await TaskInline(gulp, common)
     await TaskUseref(gulp, common)
-    // await TaskMd5(gulp, common)
-    // await TaskDisplace(gulp, common)
+    await TaskInline(gulp, common)
+    await TaskMd5(gulp, common)
+    await TaskDisplace(gulp, common)
     await TaskReplaceDomain(gulp, common)
     for (let index = 0; index < langHtmlList.length; index++) {
       for (const key in lang) {
