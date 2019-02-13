@@ -44,19 +44,21 @@ module.exports = async common => {
     await toPromise(TaskBabel, gulp, common)
     await toPromise(TaskArt, gulp, common)
     let langHtmlList = []
-    for (const key in lang) {
-      if (key === 'defulteLang') {
-        lang[lang.defulteLang].push('index')
-      } else {
-        langHtmlList = await toPromise1(TaskArtLang, gulp, common, key)
-        langFomatData[key] = lang[key]
+    if (lang) {
+      for (const key in lang) {
+        if (key === 'defulteLang') {
+          lang[lang.defulteLang].push('index')
+        } else {
+          langHtmlList = await toPromise1(TaskArtLang, gulp, common, key)
+          langFomatData[key] = lang[key]
+        }
       }
+      common.messager.log('多语言ART 编译完成')
     }
-    common.messager.log('多语言ART 编译完成')
     await TaskInline(gulp, common)
     await TaskUseref(gulp, common)
-    await TaskMd5(gulp, common)
-    await TaskDisplace(gulp, common)
+    // await TaskMd5(gulp, common)
+    // await TaskDisplace(gulp, common)
     await TaskReplaceDomain(gulp, common)
     for (let index = 0; index < langHtmlList.length; index++) {
       for (const key in lang) {

@@ -7,7 +7,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
   const fontPath = path.resolve(assetsPath, 'font/**/*')
   const manifestPath = path.resolve(buildDistPath, './rev-manifest.json')
   const tmpPath = path.resolve(buildDistPath, './tmp', publicAssetsPath)
-  gulp.src([jsPath, cssPath, fontPath], {base: assetsPath})
+  gulp.src([jsPath, cssPath, fontPath], { base: assetsPath })
     .pipe(common.plugins.rev())
     .on('error', e => {
       console.log(e)
