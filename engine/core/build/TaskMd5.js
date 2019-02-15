@@ -1,13 +1,15 @@
+const fs = require('fs-extra')
 const path = require('path')
 const del = require('del')
+
 module.exports = (gulp, common) => new Promise(resolve => {
-  const { buildDistPath, assetsPath, publicAssetsPath } = common.config
+  const { buildDistPath, assetsPath, relativeHtmlPath } = common.config
   const jsPath = path.resolve(assetsPath, 'js/**/*.js')
   const cssPath = path.resolve(assetsPath, 'css/**/*.css')
   const fontPath = path.resolve(assetsPath, 'font/**/*')
   const manifestPath = path.resolve(buildDistPath, './rev-manifest.json')
-  const tmpPath = path.resolve(buildDistPath, './tmp', publicAssetsPath)
-  gulp.src([jsPath, cssPath, fontPath], {base: assetsPath})
+  const tmpPath = path.resolve(buildDistPath, './tmp', relativeHtmlPath)
+  gulp.src([jsPath, cssPath, fontPath], { base: assetsPath })
     .pipe(common.plugins.rev())
     .on('error', e => {
       console.log(e)
@@ -29,6 +31,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
       gulp.src(path.resolve(tmpPath, './**/*'))
         .pipe(gulp.dest(assetsPath))
         .on('end', () => {
+          fs.removeSync(path.resolve(buildDistPath, './tmp'))
           resolve()
         })
     })
