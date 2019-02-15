@@ -16,16 +16,16 @@ module.exports = (gulp, common) => new Promise(resolve => {
     .pipe(common.plugins.revDisplace({
       replaceReved: true
     }))
-    // .pipe(common.plugins.htmlmin({
-    //   collapseWhitespace: true,
-    //   minifyCSS: true,
-    //   minifyJS: {compress: {drop_console: true}},
-    //   processConditionalComments: true,
-    //   removeComments: true,
-    //   removeEmptyAttributes: true,
-    //   removeScriptTypeAttributes: true,
-    //   removeStyleLinkTypeAttributes: true
-    // }))
+    .pipe(common.plugins.htmlmin({
+      collapseWhitespace: true,
+      minifyCSS: true,
+      minifyJS: { compress: { drop_console: true } },
+      processConditionalComments: true,
+      removeComments: true,
+      removeEmptyAttributes: true,
+      removeScriptTypeAttributes: true,
+      removeStyleLinkTypeAttributes: true
+    }))
     .pipe(gulp.dest(buildDistPath))
     .on('end', () => {
       htmlDisPlaceState = true
