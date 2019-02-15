@@ -20,6 +20,9 @@ const resolve = (_config_, flag) => {
   let config = _.cloneDeep(_config_)
   const { projectPath, root } = config
   const flagConfig = config[flag]
+  if (flagConfig.resourcesDomain && !flagConfig.imgResourcesDomain) {
+    flagConfig.imgResourcesDomain = flagConfig.resourcesDomain
+  }
   config.appNodeModules = path.resolve(root, './node_modules')
   config.localNodeModules = path.resolve(projectPath, './node_modules')
   config.buildDistPath = path.resolve(projectPath, './dist')
