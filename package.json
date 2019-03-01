@@ -1,6 +1,6 @@
 {
   "name": "goflow-cli",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "goflow cli",
   "main": "index.js",
   "bin": {
@@ -55,8 +55,8 @@
     "gulp": "^4.0.0",
     "gulp-babel": "^7.0.1",
     "gulp-changed": "^3.2.0",
+    "gulp-clean-css": "^4.0.0",
     "gulp-css-base64": "^1.3.4",
-    "gulp-cssnano": "^2.1.3",
     "gulp-domain-replace": "^1.0.1",
     "gulp-eslint-through": "^1.0.0",
     "gulp-html-art": "^1.2.0",

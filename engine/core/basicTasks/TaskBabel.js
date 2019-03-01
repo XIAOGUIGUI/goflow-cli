@@ -2,7 +2,7 @@ const path = require('path')
 module.exports = (gulp, common, resolve) => {
   const DEV = process.env.NODE_ENV === 'dev'
   const { root, projectPath, assetsPath } = common.config
-  const {env} = common.config[process.env.NODE_ENV]
+  const { env } = common.config[process.env.NODE_ENV]
   const defineVariable = require('../common/define_variable')(common.config)
   const jsPath = path.resolve(projectPath, './src/js/**/*.js')
   const distPath = path.resolve(assetsPath, './js')
@@ -14,9 +14,9 @@ module.exports = (gulp, common, resolve) => {
     uglifyOption.compress.drop_console = true
   }
   gulp.src(jsPath)
-    .pipe(common.plugins.changed(distPath, {
+    .pipe(common.plugins.if(DEV, common.plugins.changed(distPath, {
       extension: '.js'
-    }))
+    })))
     .pipe(common.plugins.preprocess({ context: defineVariable }))
     .pipe(common.plugins.babel({
       presets: [es2015Path]
