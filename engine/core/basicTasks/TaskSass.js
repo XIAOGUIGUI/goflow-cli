@@ -48,13 +48,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
     .on('error', function (e) {
       console.log(e)
     })
-    .pipe(common.plugins.if(!DEV, common.plugins.cssnano({
-      safe: true,
-      reduceTransforms: false,
-      advanced: false,
-      compatibility: 'ie8',
-      keepSpecialComments: 0
-    })))
+    .pipe(common.plugins.if(!DEV, common.plugins.cleanCss()))
     .pipe(common.plugins.if(DEV, common.plugins.sourcemaps.write()))
     .pipe(gulp.dest(distPath))
     .on('end', () => {
