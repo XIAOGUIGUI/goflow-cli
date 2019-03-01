@@ -11,13 +11,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
       console.log(e)
     })
     .pipe(common.plugins.if(/\.js$/, common.plugins.uglify()))
-    .pipe(common.plugins.if(/\.css$/, common.plugins.cssnano({
-      safe: true,
-      reduceTransforms: false,
-      advanced: false,
-      compatibility: 'ie8',
-      keepSpecialComments: 0
-    })))
+    .pipe(common.plugins.if(/\.css$/, common.plugins.cleanCss()))
     .pipe(gulp.dest(buildDistPath))
     .on('end', () => {
       resolve()
