@@ -1,6 +1,10 @@
 ## Unreleased
 
 * [null]
+## 1.1.6 (Mar 4, 2019)
+
+* 修复webpack模式动态引入代码打包错误问题
+* 修复gulp模式html页面js-beautify最新版本代码错误问题
 
 ## 1.1.5 (Mar 1, 2019)
 
