@@ -1,6 +1,6 @@
 {
   "name": "goflow-cli",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "goflow cli",
   "main": "index.js",
   "bin": {
@@ -15,6 +15,7 @@
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.5",
     "babel-plugin-component": "^1.1.1",
+    "babel-plugin-dynamic-import-webpack": "^1.1.0",
     "babel-plugin-istanbul": "^4.1.5",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
@@ -86,6 +87,7 @@
     "inject-loader": "^4.0.1",
     "inquirer": "^6.0.0",
     "ip": "^1.1.5",
+    "js-beautify": "1.8.9",
     "js-yaml": "^3.12.0",
     "legoflow-project": "0.0.24",
     "less": "^3.9.0",
