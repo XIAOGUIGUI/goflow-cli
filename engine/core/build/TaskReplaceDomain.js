@@ -13,8 +13,8 @@ module.exports = (gulp, common) => new Promise(resolve => {
     gulp.src(`${buildDistPath}/**/*.html`)
       .pipe(common.plugins.domainReplace({
         assetsUrl: resourcesDomain,
-        assetsPath: assetsSubDirectory,
-        type: assetsSubDirectory
+        imgUrl: imgResourcesDomain,
+        assetsPath: assetsSubDirectory
       }))
       .pipe(gulp.dest(buildDistPath))
       .on('end', () => {
