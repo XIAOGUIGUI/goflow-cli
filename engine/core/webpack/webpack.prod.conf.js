@@ -7,7 +7,7 @@ const merge = require('webpack-merge')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
-const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
+const ParallelUglifyESPlugin = require('webpack-parallel-uglify-es-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const getCacheGroups = require('../common/getCacheGroups')
@@ -55,7 +55,7 @@ module.exports = (config) => {
       }
     },
     plugins: [
-      new ParallelUglifyPlugin({
+      new ParallelUglifyESPlugin({
         cacheDir: '.cache/',
         uglifyJS: {
           output: {
