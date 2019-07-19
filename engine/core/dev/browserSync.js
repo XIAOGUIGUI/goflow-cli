@@ -1,30 +1,31 @@
 const browserSync = require('browser-sync')
-let config = void 0;
+let config = void 0
 let server = resolve => {
   const { buildDistPath, localNodeModules, appNodeModules } = config
   const { port, ip, startPath, autoOpenBrowser } = config.dev
+  let bsHotFileUrl
   const options = {
     https: false,
     ui: false,
     notify: false,
     ghostMode: false,
+    host: ip,
     port,
     timestamps: true,
     server: {
       baseDir: [buildDistPath, localNodeModules, appNodeModules]
     },
     open: 'external',
-    scriptPath(path, port) {
-      bsPort = port
+    scriptPath (path, port) {
       bsHotFileUrl = `http://${ip}:${port}${path.toString()}`
       return ''
     },
     snippetOptions: {
       rule: {
         match: /<\/body>/i,
-        fn(snippet) {
-          let consoleString = '<script src="https://s1.yy.com/ued_web_static/lib/lego/log/dev.js" async="async"><\/script>'
-          snippet = `<script src="${bsHotFileUrl}"><\/script>${consoleString}<\/body>`
+        fn (snippet) {
+          let consoleString = '<script src="https://s1.yy.com/ued_web_static/lib/lego/log/dev.js" async="async"></script>'
+          snippet = `<script src="${bsHotFileUrl}"></script>${consoleString}</body>`
           return snippet
         }
       }

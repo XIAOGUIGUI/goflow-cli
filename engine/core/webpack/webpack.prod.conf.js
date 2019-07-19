@@ -15,7 +15,7 @@ const getCacheGroups = require('../common/getCacheGroups')
 module.exports = (config) => {
   const { projectPath, buildDistPath } = config
   const baseWebpackConfig = require('./webpack.base.conf')(config)
-  const { assetsPublicPath, analyzer } = config[process.env.NODE_ENV]
+  const { assetsPublicPath, analyzer, uglify } = config[process.env.NODE_ENV]
   let SwOptions = {
     cacheId: config.serviceWorker.cacheId,
     filename: 'service-worker.js',
@@ -64,7 +64,7 @@ module.exports = (config) => {
           },
           compress: {
             warnings: false,
-            drop_console: true,
+            drop_console: uglify.drop_console,
             collapse_vars: true,
             reduce_vars: true
           }
