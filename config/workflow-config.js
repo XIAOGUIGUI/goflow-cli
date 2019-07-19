@@ -26,10 +26,16 @@ module.exports = {
     analyzer: false,
     assetsSubDirectory: 'static',
     assetsPublicPath: './',
-    relativeHtmlPath: './'
+    relativeHtmlPath: './',
+    uglify: {
+      drop_console: true
+    }
   },
   testing: {
-    env: 'testing'
+    env: 'testing',
+    uglify: {
+      drop_console: true
+    }
   },
   dev: {
     env: 'development',
