@@ -26,7 +26,7 @@ const toPromise1 = (func, gulp, common, arg) => {
   })
 }
 module.exports = async common => {
-  const { buildDistPath, lang } = common.config
+  const { buildDistPath, webp, lang } = common.config
   let langFomatData = {}
   try {
     fs.removeSync(buildDistPath)
@@ -39,7 +39,9 @@ module.exports = async common => {
       resolve()
     })
     await TaskImg(gulp, common)
-    await TaskWebp(gulp, common)
+    if (webp === true) {
+      await TaskWebp(gulp, common)
+    }
     await toPromise(TaskLintCss, gulp, common)
     await TaskSass(gulp, common)
     await toPromise(TaskLintJs, gulp, common)
