@@ -3,6 +3,7 @@ let config = void 0
 let server = resolve => {
   const { buildDistPath, localNodeModules, appNodeModules } = config
   const { port, ip, startPath, autoOpenBrowser } = config.dev
+  console.log(buildDistPath)
   let bsHotFileUrl
   const options = {
     https: false,
