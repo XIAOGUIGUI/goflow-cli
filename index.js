@@ -55,6 +55,12 @@ program
     checkUpdate().then(() => workflow('dll', void 0, cmd))
   })
 program
+  .command('build:play')
+  .description(chalk.yellow('run build play'))
+  .action((cmd) => {
+    checkUpdate().then(() => workflow('play', void 0, cmd))
+  })
+program
   .command('lint')
   .description(chalk.yellow('run lint workflow in project'))
   .action((cmd) => {

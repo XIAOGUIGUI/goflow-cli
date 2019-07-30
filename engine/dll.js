@@ -9,11 +9,11 @@ const del = require('del')
 const webpackAlias = require('./core/common/webpack_alias')
 
 module.exports = function (config) {
-  let common = require('./core/common/common')(config, 'dev')
+  let common = require('./core/common/common')(config, 'build')
 
   const { root, projectPath } = common.config
 
-  const { dll } = config.webpack || { }
+  const { dll } = common.config.webpack ? common.config.webpack : {}
 
   if (!dll) {
     common.messager.stop('dll config undefined')
