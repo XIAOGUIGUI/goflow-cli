@@ -28,6 +28,7 @@ let getPostcssList = config => {
 module.exports = (gulp, common) => new Promise(resolve => {
   const { projectPath, assetsPath } = common.config
   const sassPath = path.resolve(projectPath, './src/sass/**/*.scss')
+  const sassBasePath = path.resolve(projectPath, './src/sass/')
   const distPath = path.resolve(assetsPath, './css')
 
   DEV = process.env.NODE_ENV === 'dev'
@@ -36,6 +37,7 @@ module.exports = (gulp, common) => new Promise(resolve => {
     .pipe(common.plugins.changed(distPath, {
       extension: '.css'
     }))
+    .pipe(common.plugins.betterSassInheritance({ base: sassBasePath }))
     .pipe(common.plugins.if(DEV, common.plugins.sourcemaps.init()))
     .pipe(common.plugins.sass())
     .on('error', sassErrorNotifier)

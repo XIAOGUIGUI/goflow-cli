@@ -1,6 +1,7 @@
 module.exports = {
   mode: 'gulp',
   webpack: {},
+  webp: true,
   px2rem: {
     // px转rem配置
     enable: false, // 是否开启
