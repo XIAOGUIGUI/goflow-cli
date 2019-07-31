@@ -26,6 +26,7 @@ const resolve = (_config_, flag) => {
   config.appNodeModules = path.resolve(root, './node_modules')
   config.localNodeModules = path.resolve(projectPath, './node_modules')
   config.buildDistPath = path.resolve(projectPath, './dist')
+  config.buildPlayPath = path.resolve(projectPath, './play')
   config.buildTmpPath = path.resolve(projectPath, './dist/tmp')
   config.publicAssetsPath = flagConfig.assetsPublicPath + flagConfig.assetsSubDirectory
   if (flag === 'build' && flagConfig.resourcesDomain) {
