@@ -1,6 +1,6 @@
 const fs = require('fs-extra')
 const gulp = require('gulp')
-const base64 = require('gulp-html-css-js-base64')
+const base64 = require('gulp-into-base64')
 
 module.exports = async function (config) {
   let common = require('./core/common/common')(config, 'build')
