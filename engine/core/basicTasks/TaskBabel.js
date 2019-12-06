@@ -8,11 +8,14 @@ module.exports = (gulp, common, resolve) => {
   const distPath = path.resolve(assetsPath, './js')
   const es2015Path = path.resolve(root, './node_modules/babel-preset-es2015')
   let uglifyOption = {
-    compress: {}
+    compress: {
+      drop_console: false
+    }
   }
   if (env === 'prod') {
     uglifyOption.compress.drop_console = true
   }
+  console.log(uglifyOption)
   gulp.src(jsPath)
     .pipe(common.plugins.if(DEV, common.plugins.changed(distPath, {
       extension: '.js'
@@ -24,7 +27,7 @@ module.exports = (gulp, common, resolve) => {
     .on('error', function (e) {
       this.emit('end')
     })
-    .pipe(common.plugins.if(!DEV, common.plugins.uglify(uglifyOption)))
+    // .pipe(common.plugins.if(!DEV, common.plugins.uglify(uglifyOption)))
     .pipe(gulp.dest(distPath))
     .on('end', () => {
       if (DEV === false) {
