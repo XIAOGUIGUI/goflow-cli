@@ -15,7 +15,7 @@ const sassErrorNotifier = function (msg) {
 let getPostcssList = config => {
   let result = [
     postcssAutoprefixer({
-      browsers: config.browserslist,
+      overrideBrowserslist: config.browserslist,
       cascade: true,
       remove: false
     })
