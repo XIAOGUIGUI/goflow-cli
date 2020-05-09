@@ -16,6 +16,7 @@ var templateFunction = function (data) {
   let templateConfig = _.defaultsDeep(templateOption, {
     spritesheetNameMap: {},
     spriteNameMap: {},
+    spriteRetina: {},
     spritesheetDisRem: {},
     spritesheetClassMap: {}
   })
@@ -29,6 +30,10 @@ var templateFunction = function (data) {
   if (templateConfig && templateConfig.spritesheetDisRem && templateConfig.spritesheetDisRem[spritesName]) {
     unit = 'PX'
   }
+  let retina = 1
+  if (templateConfig && templateConfig.spriteRetina && templateConfig.spriteRetina[spritesName]) {
+    retina = 2
+  }
   if (templateConfig && templateConfig.spritesheetNameMap[spritesName]) {
     let name = templateConfig.spritesheetNameMap[spritesName]
     spritesheetName = name.replace(/,\s*./g, ',\n.')
@@ -40,8 +45,8 @@ var templateFunction = function (data) {
     .replace('{close}', closeSpace)
     .replace('N', spritesheetName)
     .replace('I', data.sprites[0].image)
-    .replace('W', data.spritesheet.width)
-    .replace('H', data.spritesheet.height)
+    .replace('W', data.spritesheet.width / retina)
+    .replace('H', data.spritesheet.height / retina)
     .replace(/U/g, unit)
     .replace(/\t/g, shareSpace)
   let spriteNameMap = templateConfig && templateConfig.spriteNameMap[spritesName] ? templateConfig.spriteNameMap[spritesName] : {}
@@ -57,23 +62,23 @@ var templateFunction = function (data) {
     if (isRem && sprite.offset_x !== 0) {
       x = (sprite.offset_x / (sprite.width - data.spritesheet.width) * 100) + '%'
     } else if (sprite.offset_x !== 0) {
-      x = sprite.offset_x + unit
+      x = (sprite.offset_x / retina) + unit
     } else {
-      x = sprite.offset_x
+      x = (sprite.offset_x / retina)
     }
     if (isRem && sprite.offset_y !== 0) {
       y = (sprite.offset_y / (sprite.height - data.spritesheet.height) * 100) + '%'
     } else if (sprite.offset_y !== 0) {
-      y = sprite.offset_y + unit
+      y = (sprite.offset_y / retina) + unit
     } else {
-      y = sprite.offset_y
+      y = (sprite.offset_y / retina)
     }
     return '{start}N {\n\twidth: WU;\n\theight: HU;\n\n\tbackground-position: X Y;\n{close}}'
       .replace('{start}', startSpace)
       .replace('{close}', closeSpace)
       .replace('N', name)
-      .replace('W', sprite.width + 1)
-      .replace('H', sprite.height + 1)
+      .replace('W', (sprite.width / retina) + 1)
+      .replace('H', (sprite.height / retina) + 1)
       .replace('X', x)
       .replace('Y', y)
       .replace(/U/g, unit)

@@ -37,7 +37,7 @@ module.exports = async () => {
     if (e.toString().indexOf('timeout') > 0) {
       console.error('[CHECK UPDATE ERROR]', 'timeout of 5000ms exceeded')
     } else {
-      console.error('[CHECK UPDATE ERROR]', e.response.data)
+      console.error('[CHECK UPDATE ERROR]', e.response ? e.response.data : '检查更新失败')
     }
   }
 }
