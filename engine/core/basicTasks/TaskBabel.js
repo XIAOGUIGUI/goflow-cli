@@ -15,7 +15,6 @@ module.exports = (gulp, common, resolve) => {
   if (env === 'prod') {
     uglifyOption.compress.drop_console = true
   }
-  console.log(uglifyOption)
   gulp.src(jsPath)
     .pipe(common.plugins.if(DEV, common.plugins.changed(distPath, {
       extension: '.js'

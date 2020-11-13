@@ -5,7 +5,7 @@ module.exports = config => {
     'process.NODE_ENV': env,
     'process.DEBUG': JSON.stringify(process.env.NODE_ENV === 'dev'),
     NODE_ENV: env,
-    DEBUG: JSON.stringify(process.env.NODE_ENV === 'dev')
+    DEBUG: process.env.NODE_ENV === 'dev'
   }
   if (typeof userArgs !== 'undefined') {
     for (let key in userArgs) {
