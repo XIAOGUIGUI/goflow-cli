@@ -22,7 +22,6 @@ module.exports = common => new Promise(resolve => {
         common.messager.log(msg)
         common.messager.stop(`webpack打包错误`)
       } else {
-        console.log(msg)
         common.messager.log('webpack构建完成')
         resolve()
       }
