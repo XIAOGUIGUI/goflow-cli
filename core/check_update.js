@@ -9,8 +9,7 @@ const { version: nowVersion } = require('../package.json')
 
 module.exports = async () => {
   try {
-    const { version } = (await axios(
-      'https://raw.githubusercontent.com/XIAOGUIGUI/goflow-cli/master/package.json',
+    const { version } = (await axios('https://raw.githubusercontent.com/XIAOGUIGUI/goflow-cli/master/package.json',
       { timeout: 5000 }
     )).data
     if (compareVersion(version, nowVersion) > 0) {
@@ -34,6 +33,7 @@ module.exports = async () => {
       )
     }
   } catch (e) {
+    console.log(e)
     if (e.toString().indexOf('timeout') > 0) {
       console.error('[CHECK UPDATE ERROR]', 'timeout of 5000ms exceeded')
     } else {

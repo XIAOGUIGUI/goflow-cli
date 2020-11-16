@@ -20,12 +20,9 @@
 
 ## 安装
 
-```
-npm i goflow-cli -g
+**[INSTALL](./INSTALL.md)**
 
-# 推荐使用 yarn 安装
-yarn global install goflow-cli
-```
+
 ## 使用
 
 ### 查看命令
