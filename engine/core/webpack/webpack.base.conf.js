@@ -136,7 +136,7 @@ module.exports = (config) => {
           }
         },
         {
-          test: /\.(gif|svg)(\?.*)?$/,
+          test: /\.(gif|svg|svga)(\?.*)?$/,
           loader: require.resolve('url-loader') + '?' + JSON.stringify(imgLoaderOptions),
           exclude: [resolve('src/icons')]
         },
