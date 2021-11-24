@@ -2,6 +2,11 @@
 
 * [null]
 
+## 1.2.4 (Nov 24, 2021)
+* 更新查找可用端口版本
+* 更新gulp-imagemin版本
+* 去除imagemin-pngquant及fontmin
+
 ## 1.2.3 (Jul 19, 2021)
 * 添加svga类型的支持
 
