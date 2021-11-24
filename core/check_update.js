@@ -33,7 +33,6 @@ module.exports = async () => {
       )
     }
   } catch (e) {
-    console.log(e)
     if (e.toString().indexOf('timeout') > 0) {
       console.error('[CHECK UPDATE ERROR]', 'timeout of 5000ms exceeded')
     } else {
